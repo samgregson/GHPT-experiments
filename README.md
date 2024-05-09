@@ -1,4 +1,4 @@
-# GHPT-colab-experiments
+# GHPT-experiments
 
 This is inspired by GHPT: https://github.com/enmerk4r/GHPT
 
