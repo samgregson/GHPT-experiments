@@ -1,3 +1,4 @@
+setuptools
 openai
 requests
 python-dotenv
