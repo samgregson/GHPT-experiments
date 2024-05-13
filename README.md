@@ -1,3 +1,5 @@
+[![Tests](https://github.com/samgregson/GHPT-experiments/actions/workflows/python-app.yml/badge.svg)](https://github.com/samgregson/GHPT-experiments/actions/workflows/python-app.yml)
+
 # GHPT-experiments
 
 This is inspired by GHPT: https://github.com/enmerk4r/GHPT
@@ -13,6 +15,13 @@ https://github.com/samgregson/GHPT/tree/llm-result-as-input
 This allows JSON input to be used directly to allow for testing the output of the colab notebook to aid development and test validity of generated JSON.
 
 ![image](https://github.com/samgregson/GHPT-colab-experiments/assets/12054742/5c7465b6-30aa-430e-b14e-5cb4a56c3988)
+
+## Get Started (in VS Code)
+* clone repo
+* run `pip install -r requirements.txt` to install dependancies
+* run `pip install jupyter` to install dependancies
+* run `pip install -e .` to install the project module
+* set up `OPENAI_API_KEY` in `.env` file (assuming you have set one up)
 
 ## Built With
 
