@@ -1,8 +1,13 @@
+import os
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 import pytest
 
-@pytest.mark.parametrize("notebook", ['notebooks/ghpt_baseline.ipynb','notebooks/ghpt_instructor.ipynb'])
+# file path needed to work with pytest
+dir_path = os.path.dirname(os.path.realpath(__file__))
+notebooks = [os.path.join(dir_path, 'ghpt_baseline.ipynb'), os.path.join(dir_path, 'ghpt_instructor.ipynb')]
+
+@pytest.mark.parametrize("notebook", notebooks)
 def test_notebooks(notebook):
     """
     Test function to execute and validate a Jupyter notebook.
@@ -18,5 +23,5 @@ def test_notebooks(notebook):
         ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
         try:
             assert ep.preprocess(nb) is not None, f"Got empty notebook for {notebook}"
-        except Exception:
-            assert False, f"Failed executing {notebook}"
+        except Exception as e:
+            assert False, f"Failed executing {notebook}: {str(e)}"
