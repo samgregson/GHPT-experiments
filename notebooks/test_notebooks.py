@@ -5,7 +5,11 @@ import pytest
 
 # file path needed to work with pytest
 dir_path = os.path.dirname(os.path.realpath(__file__))
-notebooks = [os.path.join(dir_path, 'ghpt_baseline.ipynb'), os.path.join(dir_path, 'ghpt_instructor.ipynb')]
+notebooks = [
+    os.path.join(dir_path, 'ghpt_baseline.ipynb'),
+    os.path.join(dir_path, 'ghpt_instructor.ipynb')
+]
+
 
 @pytest.mark.parametrize("notebook", notebooks)
 def test_notebooks(notebook):
@@ -22,6 +26,10 @@ def test_notebooks(notebook):
         nb = nbformat.read(f, as_version=4)
         ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
         try:
-            assert ep.preprocess(nb) is not None, f"Got empty notebook for {notebook}"
+            executed_nb, _ = ep.preprocess(
+                nb, 
+                {'metadata': {'path': dir_path}}
+            )
+            assert executed_nb, f"Got empty notebook for {notebook}"
         except Exception as e:
             assert False, f"Failed executing {notebook}: {str(e)}"

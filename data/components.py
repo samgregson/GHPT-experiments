@@ -1,8 +1,6 @@
 import json
 import os
 
-# Get the absolute path of the components.json file
-file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'components.json'))
 
 # Load the components.json file to a dictionary variable
 def load_components():
