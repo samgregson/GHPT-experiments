@@ -26,6 +26,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Install this package
+      run: |
+        pip install -e .
     - name: Install Jupyter
       run: |
         pip install jupyter
