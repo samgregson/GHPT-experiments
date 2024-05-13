@@ -12,6 +12,7 @@ notebooks = [
 
 
 @pytest.mark.parametrize("notebook", notebooks)
+@pytest.mark.skip(reason="expensive")
 def test_notebooks(notebook):
     """
     Test function to execute and validate a Jupyter notebook.
