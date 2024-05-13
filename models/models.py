@@ -8,18 +8,18 @@ components_dict = load_components()
 class Component(BaseModel):
     Name: str = Field(
         ...,
-        description="The name of the component to be added. Only standard"
+        description="The name of the component to be added. Only standard "
                     "grasshopper components are allowed"
     )
     Id: int = Field(
         ...,
-        description="A unique identifier for the component, starting from 1"
+        description="A unique identifier for the component, starting from 1 "
                     "and counting upwards"
     )
     Value: Optional[str] = Field(
         None,
         alias='Value',
-        description="The range of values for the component, if applicable."
+        description="The range of values for the component, if applicable. "
                     "Only to be used for Panel, Number Slider,"
                     "or Point components"
     )
@@ -29,8 +29,8 @@ class Component(BaseModel):
     def validate_name_exists(cls, v):
         name_iterator = (component["Name"] for component in components_dict)
         if v not in name_iterator:
-            raise ValueError(f"The component {v} could not be found, either"
-                             "there is a typo or it does not exist. Please"
+            raise ValueError(f"The component {v} could not be found, either "
+                             "there is a typo or it does not exist. Please "
                              "choose a valid component.")
         return v
 
@@ -38,12 +38,12 @@ class Component(BaseModel):
 class InputConnectionDetail(BaseModel):
     Id: int = Field(
         ...,
-        description="The unique identifier of the component the connection is"
+        description="The unique identifier of the component the connection is "
                     "related to"
     )
     ParameterName: str = Field(
         ...,
-        description="The specific input parameter of the component that the"
+        description="The specific input parameter of the component that the "
                     "connection affects"
     )
 
@@ -51,12 +51,12 @@ class InputConnectionDetail(BaseModel):
 class OutputConnectionDetail(BaseModel):
     Id: int = Field(
         ...,
-        description="The unique identifier of the component the connection is"
+        description="The unique identifier of the component the connection is "
                     "related to"
         )
     ParameterName: str = Field(
         ...,
-        description="The specific output parameter of the component that the"
+        description="The specific output parameter of the component that the "
                     "connection affects"
         )
 
@@ -64,13 +64,13 @@ class OutputConnectionDetail(BaseModel):
 class Connection(BaseModel):
     From: OutputConnectionDetail = Field(
         ...,
-        description="The source component and parameter from which the"
+        description="The source component and parameter from which the "
                     "connection originates"
     )
     To: InputConnectionDetail = Field(
         ...,
-        description="The target component and parameter that the connection is"
-                    "directing to"
+        description="The target component and parameter that the connection "
+                    "is directing to"
     )
 
 
