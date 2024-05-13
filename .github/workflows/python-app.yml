@@ -4,10 +4,8 @@
 name: Python application
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main","dev" ]
 
 permissions:
   contents: read
@@ -19,15 +17,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.10
+    - name: Set up Python 3.12.3
       uses: actions/setup-python@v3
       with:
-        python-version: "3.10"
+        python-version: "3.12.3"
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Install this package
+      run: |
+        pip install -e .
+    - name: Install Jupyter
+      run: |
+        pip install jupyter
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -37,3 +41,5 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

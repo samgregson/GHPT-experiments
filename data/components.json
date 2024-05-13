@@ -1,5 +1,14 @@
 [
   {
+    "Name": "Number Slider",
+    "Description": "A slider for selecting a numeric value.",
+    "IsCoreComponent": true,
+    "Inputs": [],
+    "Outputs": [
+      { "Name": "Value", "DataType": "Number", "IsOptional": false }
+    ]
+  },
+  {
     "Name": "Cull Pattern",
     "Description": "Cull (remove) elements in a list using a repeating bit mask.",
     "IsCoreComponent": true,
