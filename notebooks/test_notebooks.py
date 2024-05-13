@@ -27,7 +27,7 @@ def test_notebooks(notebook):
         ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
         try:
             executed_nb, _ = ep.preprocess(
-                nb, 
+                nb,
                 {'metadata': {'path': dir_path}}
             )
             assert executed_nb, f"Got empty notebook for {notebook}"
