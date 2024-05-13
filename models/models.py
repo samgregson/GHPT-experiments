@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import List, Optional
-from data.components import components_dict
+from data.components import load_components
+
+components_dict = load_components()
 
 class Component(BaseModel):
     Name: str = Field(..., description="The name of the component to be added. Only standard grasshopper components are allowed")

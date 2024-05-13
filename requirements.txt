@@ -4,3 +4,6 @@ requests
 python-dotenv
 instructor
 anthropic
+nbformat
+nbconvert
+pytest
