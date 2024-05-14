@@ -73,4 +73,4 @@ def test_gh_model_component_fail():
 
     with pytest.raises(ValueError) as e:
         GrasshopperScriptModel(**example_json)
-    assert e.typename == "ValidationError"
+    assert "could not be found" in str(e.value)
