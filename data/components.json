@@ -1,5 +1,16 @@
 [
   {
+    "Name": "Point",
+    "Description": "Represents a point in 3D space.",
+    "IsCoreComponent": true,
+    "Inputs": [
+      { "Name": "Point", "DataType": "Point", "IsOptional": true }
+    ],
+    "Outputs": [
+      { "Name": "Point", "DataType": "Point", "IsOptional": false }
+    ]
+  },
+  {
     "Name": "Number Slider",
     "Description": "A slider for selecting a numeric value.",
     "IsCoreComponent": true,
