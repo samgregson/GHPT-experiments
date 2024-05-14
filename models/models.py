@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import List, Optional
 from data.components import load_components
 
@@ -33,6 +33,17 @@ class Component(BaseModel):
                              "there is a typo or it does not exist. Please "
                              "choose a valid component.")
         return v
+
+    @model_validator(mode='after')
+    def validate_value(self):
+        name = self.Name
+        value = self.Value
+        if value is not None and name not in ["Number Slider",
+                                              "Panel",
+                                              "Point"]:
+            raise ValueError("Value can only be defined for Number Slider, "
+                             "Panel, or Point components")
+        return self
 
 
 class InputConnectionDetail(BaseModel):
