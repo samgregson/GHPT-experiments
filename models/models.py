@@ -41,8 +41,12 @@ class Component(BaseModel):
         if value is not None and name not in ["Number Slider",
                                               "Panel",
                                               "Point"]:
-            raise ValueError("Value can only be defined for Number Slider, "
-                             "Panel, or Point components")
+            raise ValueError(f"The {name} component has value of {value}, "
+                             "However value can only be defined for Number "
+                             "`Slider`, `Panel`, or `Point` components. "
+                             "Please remove the value and try again! "
+                             "Note: you may need to add `Number Slider` "
+                             "components to provide values instead.")
         return self
 
 
