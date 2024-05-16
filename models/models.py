@@ -1,8 +1,54 @@
 from pydantic import BaseModel, Field, field_validator, model_validator
-from typing import List, Optional
+from typing import List, Literal, Optional, Union
 from data.components import load_components
 
 components_dict = load_components()
+
+
+class NumberSlider(BaseModel):
+    Name: Literal["Number Slider"]
+    Id: int = Field(
+        ...,
+        description="A unique identifier for the component, starting from 1 "
+                    "and counting upwards"
+    )
+    Value: Optional[str] = Field(
+        None,
+        alias='Value',
+        description="The range of values for the Number Slider. "
+                    "In the format '<start>..<default>..<end>'. "
+                    "Give a decent range of values to allow for flexibility"
+    )
+
+
+class Panel(BaseModel):
+    Name: Literal["Panel"]
+    Id: int = Field(
+        ...,
+        description="A unique identifier for the component, starting from 1 "
+                    "and counting upwards"
+    )
+    Value: Optional[str] = Field(
+        None,
+        alias='Value',
+        description="The text for the Panel Component. "
+                    "In the format '<text>'"
+    )
+
+
+class Point(BaseModel):
+    Name: Literal["Panel"]
+    Id: int = Field(
+        ...,
+        description="A unique identifier for the component, starting from 1 "
+                    "and counting upwards"
+    )
+    Value: Optional[str] = Field(
+        None,
+        alias='Value',
+        description="The 3D coordinates for the Point Component. "
+                    "In the format '<x>,<y>,<z>'"
+    )
 
 
 class Component(BaseModel):
@@ -16,13 +62,7 @@ class Component(BaseModel):
         description="A unique identifier for the component, starting from 1 "
                     "and counting upwards"
     )
-    Value: Optional[str] = Field(
-        None,
-        alias='Value',
-        description="The range of values for the component, if applicable. "
-                    "Only to be used for Panel, Number Slider,"
-                    "or Point components"
-    )
+
 
     @field_validator("Name")
     @classmethod
@@ -33,21 +73,6 @@ class Component(BaseModel):
                              "there is a typo or it does not exist. Please "
                              "choose a valid component.")
         return v
-
-    @model_validator(mode='after')
-    def validate_value(self):
-        name = self.Name
-        value = self.Value
-        if value is not None and name not in ["Number Slider",
-                                              "Panel",
-                                              "Point"]:
-            raise ValueError(f"The {name} component has value of {value}, "
-                             "However value can only be defined for Number "
-                             "`Slider`, `Panel`, or `Point` components. "
-                             "Please remove the value and try again! "
-                             "Note: you may need to add `Number Slider` "
-                             "components to provide values instead.")
-        return self
 
 
 class InputConnectionDetail(BaseModel):
@@ -100,12 +125,7 @@ class GrasshopperScriptModel(BaseModel):
         description="step by step rational explaining how the script acheives "
                     "the aim, including the main components used"
     )
-    Advice: str = Field(
-        ...,
-        description="A piece of advice or instruction related to using the "
-                    "grasshopper script"
-    )
-    Additions: List[Component] = Field(
+    Additions: List[Union[Component, NumberSlider, Panel, Point]] = Field(
         ...,
         description="A list of components to be added to the configuration"
     )
@@ -113,4 +133,9 @@ class GrasshopperScriptModel(BaseModel):
         ...,
         description="A list of connections defining relationships between "
                     "components' parameters"
+    )
+    Advice: str = Field(
+        ...,
+        description="A piece of advice or instruction related to using the "
+                    "grasshopper script"
     )
