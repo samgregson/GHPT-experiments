@@ -267,4 +267,4 @@ prompt_template = r"""
 
 // Question: {QUESTION}
 // Reasoning:
-"""
+""".replace("{", "{{").replace("}", "}}").replace("{{QUESTION}}", "{QUESTION}")
