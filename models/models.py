@@ -35,13 +35,15 @@ def find_valid_parameter_by_name(
     valid inputs/outputs of a component.
     Raises a ValueError if the input/output is not found.
     """
-    if input_output_type == "Inputs":
-        valid_input_outputs = valid_component.Inputs
+    if input_output_type == "input":
+        valid_input_outputs = [inputs.Name for
+                               inputs in valid_component.Inputs]
     else:
-        valid_input_outputs = valid_component.Outputs
+        valid_input_outputs = [outputs.Name for
+                               outputs in valid_component.Outputs]
     valid_parameter = next(
         (input_output for input_output in valid_input_outputs
-            if input_output.Name == parameter_name),
+            if input_output == parameter_name),
         None
     )
     if valid_parameter is None:
@@ -172,7 +174,7 @@ class GrasshopperScriptModel(BaseModel):
         description="step by step rational explaining how the script acheives "
                     "the aim, including the main components used"
     )
-    Additions: List[Union[Component, NumberSlider, Panel, Point]] = Field(
+    Additions: List[Union[NumberSlider, Panel, Point, Component]] = Field(
         ...,
         description="A list of components to be added to the configuration"
     )
@@ -222,27 +224,26 @@ class GrasshopperScriptModel(BaseModel):
                 input_output_type='output'
             )
 
-            input_parameter_type = valid_parameter_to.DataType
-            output_parameter_type = valid_parameter_from.DataType
+        #     input_parameter_type = valid_parameter_to.DataType
+        #     output_parameter_type = valid_parameter_from.DataType
 
-            if input_parameter_type != output_parameter_type:
-                raise ValueError(
-                    f"Parameter types do not match for the connection between "
-                    f"{component_name_from} and {component_name_to}. The input"
-                    f"parameter {connection.To.ParameterName} of "
-                    f"{component_name_to} expects a {input_parameter_type} "
-                    f"type, but the output parameter "
-                    f"{connection.From.ParameterName} of {component_name_from}"
-                    f"of {component_name_from} is of type"
-                    f"{output_parameter_type}. Please make sure the types "
-                    f"match.")
-
+        #     if input_parameter_type != output_parameter_type:
+        #         raise ValueError(
+        #             f"Parameter types do not match for the connection between "
+        #             f"{component_name_from} and {component_name_to}. The input"
+        #             f"parameter {connection.To.ParameterName} of "
+        #             f"{component_name_to} expects a {input_parameter_type} "
+        #             f"type, but the output parameter "
+        #             f"{connection.From.ParameterName} of {component_name_from}"
+        #             f"of {component_name_from} is of type"
+        #             f"{output_parameter_type}. Please make sure the types "
+        #             f"match.")
         return self
 
     def get_connection_component_name(
-            self,
-            connection_detail: Union[InputConnectionDetail,
-                                     OutputConnectionDetail]
+        self,
+        connection_detail: Union[InputConnectionDetail,
+                                 OutputConnectionDetail]
     ):
         id = connection_detail.Id
 
