@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Literal, Optional, Union
 from data.components import load_components
 
@@ -62,7 +62,6 @@ class Component(BaseModel):
         description="A unique identifier for the component, starting from 1 "
                     "and counting upwards"
     )
-
 
     @field_validator("Name")
     @classmethod
@@ -138,4 +137,11 @@ class GrasshopperScriptModel(BaseModel):
         ...,
         description="A piece of advice or instruction related to using the "
                     "grasshopper script"
+    )
+
+
+class Components(BaseModel):
+    Components: List[Union[Component, NumberSlider, Panel, Point]] = Field(
+        ...,
+        description="A list of components to be added to the script"
     )
