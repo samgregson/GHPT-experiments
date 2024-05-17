@@ -1,7 +1,7 @@
 from typing import Union
 from langsmith import traceable
 from openai import AsyncOpenAI, OpenAI
-from prompts.generate_script import system_prompt, prompt_template
+from prompts.pipeline_prompts import system_prompt, prompt_template
 
 from models.models import GrasshopperScriptModel
 
@@ -48,7 +48,15 @@ def call_openai_instructor(
 
 @traceable
 def run_pipeline(client: Union[OpenAI, AsyncOpenAI], user_prompt: str):
-    """runs the LLM program pipeline"""
+    """Runs the LLM program pipeline.
+
+    Args:
+        client (Union[OpenAI, AsyncOpenAI]): The OpenAI client.
+        user_prompt (str): The user prompt.
+
+    Returns:
+        [type]: The completion response.
+    """
 
     response = call_openai_instructor(
         client=client,
