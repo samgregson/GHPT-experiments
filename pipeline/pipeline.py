@@ -47,7 +47,7 @@ def call_openai_instructor(
 
 
 @traceable
-def run_pipeline(client: Union[OpenAI, AsyncOpenAI], user_prompt: str):
+async def run_pipeline(client: Union[OpenAI, AsyncOpenAI], user_prompt: str):
     """Runs the LLM program pipeline.
 
     Args:
