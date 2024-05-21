@@ -7,7 +7,7 @@ from models.models import GrasshopperScriptModel
 
 
 @traceable
-def call_openai_instructor(
+async def call_openai_instructor(
     client: Union[OpenAI, AsyncOpenAI],
     prompt: str,
     system_prompt: str = "",
@@ -32,7 +32,7 @@ def call_openai_instructor(
     Returns:
         [type]: The completion response.
     """
-    completion = client.chat.completions.create(
+    completion = await client.chat.completions.create(
         model=model,
         temperature=temperature,
         messages=[
@@ -58,7 +58,7 @@ async def run_pipeline(client: Union[OpenAI, AsyncOpenAI], user_prompt: str):
         [type]: The completion response.
     """
 
-    response = call_openai_instructor(
+    response = await call_openai_instructor(
         client=client,
         prompt=prompt_template.format(QUESTION=user_prompt),
         system_prompt=system_prompt
