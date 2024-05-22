@@ -8,3 +8,6 @@ nbformat
 nbconvert
 pytest
 langsmith
+nest_asyncio
+nbstripout
+pre-commit
