@@ -1,4 +1,4 @@
-[![Lint and Test](https://github.com/samgregson/GHPT-experiments/actions/workflows/python-app.yml/badge.svg?branch=)](https://github.com/samgregson/GHPT-experiments/actions/workflows/python-app.yml)
+[![Lint and Test](https://github.com/samgregson/GHPT-experiments/actions/workflows/python-app.yml/badge.svg?branch='main')](https://github.com/samgregson/GHPT-experiments/actions/workflows/python-app.yml)
 
 # GHPT-experiments
 
