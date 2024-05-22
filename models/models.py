@@ -1,58 +1,10 @@
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, ValidationError, field_validator, model_validator
 from typing import List, Literal, Optional, Union
+
+from pydantic_core import InitErrorDetails, PydanticCustomError
 from data.components import ValidComponents, load_components, ValidComponent
 
 valid_components = load_components()
-
-
-def find_valid_component_by_name(
-    valid_components: ValidComponents,
-    name: str
-):
-    """
-    Find the valid component with the given name from the list of valid
-    components.
-    Raises a ValueError if the component is not found.
-    """
-    valid_component = next(
-        (comp for comp in valid_components.Components if comp.Name == name),
-        None
-    )
-    if valid_component is None:
-        # this should not happen as the component name is validated
-        # before this validation
-        raise ValueError(f"Component with name {name} not found")
-    return valid_component
-
-
-def find_valid_parameter_by_name(
-    valid_component: ValidComponent,
-    parameter_name: str,
-    input_output_type: Literal["input", "output"]
-):
-    """
-    Find the valid input/output with the given parameter name from the list of
-    valid inputs/outputs of a component.
-    Raises a ValueError if the input/output is not found.
-    """
-    if input_output_type == "input":
-        valid_input_outputs = [inputs.Name for
-                               inputs in valid_component.Inputs]
-    else:
-        valid_input_outputs = [outputs.Name for
-                               outputs in valid_component.Outputs]
-    valid_parameter = next(
-        (input_output for input_output in valid_input_outputs
-            if input_output == parameter_name),
-        None
-    )
-    if valid_parameter is None:
-        raise ValueError(f"Component '{valid_component.Name}' does not have an"
-                         f" {input_output_type} parameter called"
-                         f" {parameter_name}. Please choose a valid parameter"
-                         f" from this list: {valid_input_outputs}.")
-    return valid_parameter
-
 
 class NumberSlider(BaseModel):
     Name: Literal["Number Slider"]
@@ -194,34 +146,44 @@ class GrasshopperScriptModel(BaseModel):
         """
         Validate that the parameter names in the connections are valid
         """
+        errors: List[InitErrorDetails] = []
+
         for connection in self.Connections:
             component_name_to = self.get_connection_component_name(
-                connection.To
-            )
+                    connection.To, errors
+                )
             component_name_from = self.get_connection_component_name(
-                connection.From
-            )
+                    connection.From, errors
+                )
 
             # map to list of valid components
+            if component_name_to is None:
+                continue
             valid_component_to = find_valid_component_by_name(
                 valid_components,
-                component_name_to
+                component_name_to,
+                errors
             )
+            if component_name_from is None:
+                continue
             valid_component_from = find_valid_component_by_name(
                 valid_components,
-                component_name_from
+                component_name_from,
+                errors
             )
 
             # extract parameter from valid component data
-            valid_parameter_to = find_valid_parameter_by_name(
+            find_valid_parameter_by_name(
                 valid_component=valid_component_to,
                 parameter_name=connection.To.ParameterName,
-                input_output_type='input'
+                input_output_type='input',
+                errors=errors
             )
-            valid_parameter_from = find_valid_parameter_by_name(
+            find_valid_parameter_by_name(
                 valid_component=valid_component_from,
                 parameter_name=connection.From.ParameterName,
-                input_output_type='output'
+                input_output_type='output',
+                errors=errors
             )
 
         #     input_parameter_type = valid_parameter_to.DataType
@@ -238,12 +200,18 @@ class GrasshopperScriptModel(BaseModel):
         #             f"of {component_name_from} is of type"
         #             f"{output_parameter_type}. Please make sure the types "
         #             f"match.")
+        if len(errors) > 0:
+            raise ValidationError.from_exception_data(
+                title=self.__class__.__name__,
+                line_errors=errors,
+            )
         return self
-
+    
     def get_connection_component_name(
         self,
         connection_detail: Union[InputConnectionDetail,
-                                 OutputConnectionDetail]
+                                    OutputConnectionDetail],
+        errors: List[InitErrorDetails]
     ):
         id = connection_detail.Id
 
@@ -252,7 +220,11 @@ class GrasshopperScriptModel(BaseModel):
             None
         )
         if script_component is None:
-            raise ValueError(f"Component with id {id} not found")
+            errors.append(InitErrorDetails(
+                type=PydanticCustomError(
+                    "",
+                    f"Component with id {id} not found")
+            ))
 
         return script_component.Name
 
@@ -262,3 +234,63 @@ class Components(BaseModel):
         ...,
         description="A list of components to be added to the script"
     )
+
+
+def find_valid_component_by_name(
+    valid_components: ValidComponents,
+    name: str,
+    errors: List[InitErrorDetails]
+):
+    """
+    Find the valid component with the given name from the list of valid
+    components.
+    Raises a ValueError if the component is not found.
+    """
+    valid_component = next(
+        (comp for comp in valid_components.Components if comp.Name == name),
+        None
+    )
+    if valid_component is None:
+        # this should not happen as the component name is validated
+        # before this validation
+        errors.append(None, InitErrorDetails(
+            type=PydanticCustomError(
+                "",
+                f"Component with name {name} not found")
+        ))
+    return valid_component
+
+
+def find_valid_parameter_by_name(
+    valid_component: ValidComponent,
+    parameter_name: str,
+    input_output_type: Literal["input", "output"],
+    errors: List[InitErrorDetails]
+):
+    """
+    Find the valid input/output with the given parameter name from the list of
+    valid inputs/outputs of a component.
+    Raises a ValueError if the input/output is not found.
+    """
+    if input_output_type == "input":
+        valid_input_outputs = [inputs.Name for
+                               inputs in valid_component.Inputs]
+    else:
+        valid_input_outputs = [outputs.Name for
+                               outputs in valid_component.Outputs]
+    valid_parameter = next(
+        (input_output for input_output in valid_input_outputs
+            if input_output == parameter_name),
+        None
+    )
+    if valid_parameter is None:
+        errors.append(InitErrorDetails(
+            type=PydanticCustomError(
+                "",
+                f"Component '{valid_component.Name}' does not have an "
+                f"{input_output_type} parameter called "
+                f"'{parameter_name}'. Please choose a valid parameter "
+                f"from this list: {valid_input_outputs}."
+            )
+        ))
+    return valid_parameter
