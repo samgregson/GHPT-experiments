@@ -5,9 +5,12 @@ Make sure you create and connect a component for every non-optional input
 If you're not sure about the answer, but think there's additional information that could help you, please ask for that information.
 
 Always use the given format, avoid any devitation.
-"""
 
-prompt_template = r"""
+===
+
+Here are some examples of expected output
+Examples:
+
 // Question : How do I add two numbers inside of Grasshopper?
 // Reasoning: To add two numbers we need to Add. There is an Addition component that performs this function. We need to create two numbers the user can edit, we can use the Number Slider for both numbers. And then we can Connections all of the components together
 // JSON:
@@ -264,7 +267,10 @@ prompt_template = r"""
 		}
 	]
 }
+"""
 
-// Question: {QUESTION}
-// Reasoning:
+prompt_template = r"""
+Actual question:
+// Question :{QUESTION}
+
 """.replace("{", "{{").replace("}", "}}").replace("{{QUESTION}}", "{QUESTION}")
