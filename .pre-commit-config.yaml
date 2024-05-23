@@ -1,5 +1,5 @@
 repos:
 -   repo: https://github.com/kynan/nbstripout
-    rev: 0.3.9  # Use the ref you want to point at
+    rev: 0.7.1
     hooks:
     -   id: nbstripout
