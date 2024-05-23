@@ -1,10 +1,16 @@
-from pydantic import BaseModel, Field, ValidationError, field_validator, model_validator
-from typing import List, Literal, Optional, Union
-
+from pydantic import (
+    BaseModel,
+    Field,
+    ValidationError,
+    field_validator,
+    model_validator
+)
+from typing import List, Literal, Union
 from pydantic_core import InitErrorDetails, PydanticCustomError
 from data.components import ValidComponents, load_components, ValidComponent
 
 valid_components = load_components()
+
 
 class NumberSlider(BaseModel):
     Name: Literal["Number Slider"]
@@ -13,7 +19,7 @@ class NumberSlider(BaseModel):
         description="A unique identifier for the component, starting from 1 "
                     "and counting upwards"
     )
-    Value: Optional[str] = Field(
+    Value: str = Field(
         None,
         alias='Value',
         description="The range of values for the Number Slider. "
@@ -29,7 +35,7 @@ class Panel(BaseModel):
         description="A unique identifier for the component, starting from 1 "
                     "and counting upwards"
     )
-    Value: Optional[str] = Field(
+    Value: str = Field(
         None,
         alias='Value',
         description="The text for the Panel Component. "
@@ -44,7 +50,7 @@ class Point(BaseModel):
         description="A unique identifier for the component, starting from 1 "
                     "and counting upwards"
     )
-    Value: Optional[str] = Field(
+    Value: str = Field(
         None,
         alias='Value',
         description="The 3D coordinates for the Point Component. "
