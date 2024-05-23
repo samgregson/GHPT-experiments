@@ -216,7 +216,7 @@ class GrasshopperScriptModel(BaseModel):
     def get_connection_component_name(
         self,
         connection_detail: Union[InputConnectionDetail,
-                                    OutputConnectionDetail],
+                                 OutputConnectionDetail],
         errors: List[InitErrorDetails]
     ):
         id = connection_detail.Id
