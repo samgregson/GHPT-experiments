@@ -12,52 +12,6 @@ from data.components import ValidComponents, load_components, ValidComponent
 valid_components = load_components()
 
 
-class NumberSlider(BaseModel):
-    Name: Literal["Number Slider"]
-    Id: int = Field(
-        ...,
-        description="A unique identifier for the component, starting from 1 "
-                    "and counting upwards"
-    )
-    Value: str = Field(
-        None,
-        alias='Value',
-        description="The range of values for the Number Slider. "
-                    "In the format '<start>..<default>..<end>'. "
-                    "Give a decent range of values to allow for flexibility"
-    )
-
-
-class Panel(BaseModel):
-    Name: Literal["Panel"]
-    Id: int = Field(
-        ...,
-        description="A unique identifier for the component, starting from 1 "
-                    "and counting upwards"
-    )
-    Value: str = Field(
-        None,
-        alias='Value',
-        description="The text for the Panel Component. "
-                    "In the format '<text>'"
-    )
-
-
-class Point(BaseModel):
-    Name: Literal["Panel"]
-    Id: int = Field(
-        ...,
-        description="A unique identifier for the component, starting from 1 "
-                    "and counting upwards"
-    )
-    Value: str = Field(
-        None,
-        alias='Value',
-        description="The 3D coordinates for the Point Component. "
-                    "In the format '<x>,<y>,<z>'"
-    )
-
-
 class Component(BaseModel):
     Name: str = Field(
         ...,
@@ -80,6 +34,37 @@ class Component(BaseModel):
                              "there is a typo or it does not exist. Please "
                              "choose a valid component.")
         return v
+
+
+class NumberSlider(Component):
+    Name: Literal["Number Slider"]
+    Value: str = Field(
+        None,
+        alias='Value',
+        description="The range of values for the Number Slider. "
+                    "In the format '<start>..<default>..<end>'. "
+                    "Give a decent range of values to allow for flexibility"
+    )
+
+
+class Panel(Component):
+    Name: Literal["Panel"]
+    Value: str = Field(
+        None,
+        alias='Value',
+        description="The text for the Panel Component. "
+                    "In the format '<text>'"
+    )
+
+
+class Point(Component):
+    Name: Literal["Point"]
+    Value: str = Field(
+        None,
+        alias='Value',
+        description="The 3D coordinates for the Point Component. "
+                    "In the format '<x>,<y>,<z>'"
+    )
 
 
 class InputConnectionDetail(BaseModel):
