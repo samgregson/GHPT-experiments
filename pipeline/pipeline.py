@@ -2,8 +2,9 @@ from typing import Union
 from langsmith import traceable
 from openai import AsyncOpenAI, OpenAI
 from prompts.pipeline_prompts import system_prompt, prompt_template
-
-from models.models import GrasshopperScriptModel
+from prompts.examples import example_1, example_2, example_3
+from models.models import GrasshopperScriptModel, Example
+import json
 
 
 @traceable
@@ -47,7 +48,10 @@ async def call_openai_instructor(
 
 
 @traceable
-async def run_pipeline(client: Union[OpenAI, AsyncOpenAI], user_prompt: str):
+async def run_pipeline(
+    client: Union[OpenAI, AsyncOpenAI],
+    user_prompt: str
+):
     """Runs the LLM program pipeline.
 
     Args:
@@ -60,8 +64,29 @@ async def run_pipeline(client: Union[OpenAI, AsyncOpenAI], user_prompt: str):
 
     response = await call_openai_instructor(
         client=client,
-        prompt=prompt_template.format(QUESTION=user_prompt),
-        system_prompt=system_prompt
+        prompt=prompt_template.format(DESCRIPTION=user_prompt),
+        system_prompt=system_prompt.format(
+            EXAMPLES=format_examples([example_1, example_2, example_3])
+        ),
     )
 
     return response
+
+
+def format_example(example: str) -> str:
+    """
+    Seperates the script description and grasshopper script model from the
+    example string
+    """
+    example_model = Example.model_validate(json.loads(example))
+    description = example_model.Description
+    scriptModel = example_model.GrasshopperScriptModel
+    return f"description: {description}\n\nscriptModel: {scriptModel.model_dump_json()}"
+
+
+def format_examples(examples: list[str]) -> str:
+    """formats all examples"""
+    formatted_examples = ""
+    for example in examples:
+        formatted_examples += format_example(example) + "\n\n"
+    return formatted_examples

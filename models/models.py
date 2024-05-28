@@ -12,7 +12,7 @@ from data.components import ValidComponents, load_components, ValidComponent
 valid_components = load_components()
 
 
-class Component(BaseModel):
+class ComponentAbstract(BaseModel):
     Name: str = Field(
         ...,
         description="The name of the component to be added. Only standard "
@@ -34,9 +34,22 @@ class Component(BaseModel):
                              "there is a typo or it does not exist. Please "
                              "choose a valid component.")
         return v
+    
+
+class Component(ComponentAbstract):
+    Name: str = Field(
+        ...,
+        description="The name of the component to be added. Only standard "
+                    "grasshopper components are allowed"
+    )
+    Id: int = Field(
+        ...,
+        description="A unique identifier for the component, starting from 1 "
+                    "and counting upwards"
+    )
 
 
-class NumberSlider(Component):
+class NumberSlider(ComponentAbstract):
     Name: Literal["Number Slider"]
     Value: str = Field(
         None,
@@ -47,7 +60,7 @@ class NumberSlider(Component):
     )
 
 
-class Panel(Component):
+class Panel(ComponentAbstract):
     Name: Literal["Panel"]
     Value: str = Field(
         None,
@@ -57,7 +70,7 @@ class Panel(Component):
     )
 
 
-class Point(Component):
+class Point(ComponentAbstract):
     Name: Literal["Point"]
     Value: str = Field(
         None,
@@ -106,10 +119,25 @@ class Connection(BaseModel):
     )
 
 
+class Strategy(BaseModel):
+    """
+    Strategy for creating a grasshopper script
+    """
+    ChainOfThought: str = Field(
+        ...,
+        description="step by step rational explaining how the script will "
+                    "acheive the aim, including the main components used"
+    )
+    Components: List[Union[NumberSlider, Panel, Point, Component]] = Field(
+        ...,
+        description="A list of components to be added to the configuration"
+    )
+
+
 class GrasshopperScriptModel(BaseModel):
     """
-    A representation of a grasshopper script with all grasshopper components
-    and the connections between them.
+    A acyclic directed graph representation of a grasshopper script with all
+    grasshopper components and the connections between them.
     Use Number Slider for variable inputs to the script
     """
     ChainOfThought: str = Field(
@@ -117,7 +145,7 @@ class GrasshopperScriptModel(BaseModel):
         description="step by step rational explaining how the script acheives "
                     "the aim, including the main components used"
     )
-    Additions: List[Union[NumberSlider, Panel, Point, Component]] = Field(
+    Components: List[Union[NumberSlider, Panel, Point, Component]] = Field(
         ...,
         description="A list of components to be added to the configuration"
     )
@@ -197,7 +225,7 @@ class GrasshopperScriptModel(BaseModel):
                 line_errors=errors,
             )
         return self
-    
+
     def get_connection_component_name(
         self,
         connection_detail: Union[InputConnectionDetail,
@@ -207,7 +235,7 @@ class GrasshopperScriptModel(BaseModel):
         id = connection_detail.Id
 
         script_component = next(
-            (comp for comp in self.Additions if comp.Id == id),
+            (comp for comp in self.Components if comp.Id == id),
             None
         )
         if script_component is None:
@@ -221,10 +249,15 @@ class GrasshopperScriptModel(BaseModel):
 
 
 class Components(BaseModel):
-    Components: List[Union[Component, NumberSlider, Panel, Point]] = Field(
+    Components: List[Union[ComponentAbstract, NumberSlider, Panel, Point]] = Field(
         ...,
         description="A list of components to be added to the script"
     )
+
+
+class Example(BaseModel):
+    Description: str
+    GrasshopperScriptModel: GrasshopperScriptModel
 
 
 def find_valid_component_by_name(
