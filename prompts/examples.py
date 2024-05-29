@@ -5,16 +5,16 @@ example_1 = """
 	{
 		"ChainOfThought": "To add two numbers we need to Add. There is an Addition component that performs this function. We need to create two numbers the user can edit, we can use the Number Slider for both numbers. And then we can Connections all of the components together",
 		"Advice": "Make sure to set the number sliders to the correct value",
-		"Additions": [
+		"Components": [
 			{
 				"Name": "Number Slider",
 				"Id": 1,
-				"value": "0..25..100"
+				"Value": "0..25..100"
 			},
 			{
 				"Name": "Number Slider",
 				"Id": 2,
-				"value": "-50..25..100"
+				"Value": "-50..25..100"
 			},
 			{
 				"Name": "Addition",
@@ -55,7 +55,7 @@ example_2 = """
 	{
 		"ChainOfThought": "To create a cup shape in Grasshopper, we'll first create a circle using a 'Circle CNR' component, which will act as the base of the cup. Then, we will use a 'Move' component to move the base circle vertically to create the upper rim of the cup. To create the body of the cup, we'll loft these two circles using a 'Loft' component.",
 		"Advice": "Remember, to properly define the cups dimensions using the number slider",
-		"Additions": [
+		"Components": [
 			{
 				"Name": "Circle CNR",
 				"Id": 1
@@ -113,7 +113,7 @@ example_3 = """
 	{
 		"ChainOfThought": "We can create the 'twist' using the twist component, so let's extrude a rectangle and twist it!",
 		"Advice": "Make sure to use reasonable inputs or the skyscraper will look weird",
-		"Additions": [
+		"Components": [
 			{
 				"Name": "Rectangle",
 				"Id": 1
@@ -143,12 +143,12 @@ example_3 = """
 			{
 				"Name": "Point",
 				"Id": 7,
-				"value": "{0,0,0}"
+				"Value": "{0,0,0}"
 			},
 			{
 				"Name": "Point",
 				"Id": 8,
-				"value": "{0,0,250}"
+				"Value": "{0,0,250}"
 			},
 			{
 				"Name": "Twist",

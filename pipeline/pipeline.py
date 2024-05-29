@@ -1,10 +1,12 @@
 from typing import Union
 from langsmith import traceable
 from openai import AsyncOpenAI, OpenAI
-from prompts.pipeline_prompts import system_prompt, prompt_template
-from prompts.examples import example_1, example_2, example_3
-from models.models import GrasshopperScriptModel, Example
-import json
+from prompts.pipeline_prompts import (
+    grasshopper_script_model_system_template,
+    description_template,
+    strategy_system_template
+)
+from models.models import GrasshopperScriptModel, Strategy
 
 
 @traceable
@@ -62,31 +64,18 @@ async def run_pipeline(
         [type]: The completion response.
     """
 
-    response = await call_openai_instructor(
+    strategy = await call_openai_instructor(
         client=client,
-        prompt=prompt_template.format(DESCRIPTION=user_prompt),
-        system_prompt=system_prompt.format(
-            EXAMPLES=format_examples([example_1, example_2, example_3])
-        ),
+        prompt=description_template.format(DESCRIPTION=user_prompt),
+        system_prompt=strategy_system_template,
+        response_model=Strategy
     )
 
-    return response
+    # response = await call_openai_instructor(
+    #     client=client,
+    #     prompt=description_template.format(DESCRIPTION=user_prompt),
+    #     system_prompt=grasshopper_script_model_system_template
+    # )
 
+    return strategy
 
-def format_example(example: str) -> str:
-    """
-    Seperates the script description and grasshopper script model from the
-    example string
-    """
-    example_model = Example.model_validate(json.loads(example))
-    description = example_model.Description
-    scriptModel = example_model.GrasshopperScriptModel
-    return f"description: {description}\n\nscriptModel: {scriptModel.model_dump_json()}"
-
-
-def format_examples(examples: list[str]) -> str:
-    """formats all examples"""
-    formatted_examples = ""
-    for example in examples:
-        formatted_examples += format_example(example) + "\n\n"
-    return formatted_examples

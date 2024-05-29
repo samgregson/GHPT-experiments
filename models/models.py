@@ -8,20 +8,16 @@ from pydantic import (
 from typing import List, Literal, Union
 from pydantic_core import InitErrorDetails, PydanticCustomError
 from data.components import ValidComponents, load_components, ValidComponent
+from fuzzywuzzy import process
 
 valid_components = load_components()
 
 
-class ComponentAbstract(BaseModel):
+class ComponentNames(BaseModel):
     Name: str = Field(
         ...,
         description="The name of the component to be added. Only standard "
                     "grasshopper components are allowed"
-    )
-    Id: int = Field(
-        ...,
-        description="A unique identifier for the component, starting from 1 "
-                    "and counting upwards"
     )
 
     @field_validator("Name")
@@ -34,14 +30,9 @@ class ComponentAbstract(BaseModel):
                              "there is a typo or it does not exist. Please "
                              "choose a valid component.")
         return v
-    
 
-class Component(ComponentAbstract):
-    Name: str = Field(
-        ...,
-        description="The name of the component to be added. Only standard "
-                    "grasshopper components are allowed"
-    )
+
+class AbstractComponentWithId(ComponentNames):
     Id: int = Field(
         ...,
         description="A unique identifier for the component, starting from 1 "
@@ -49,7 +40,15 @@ class Component(ComponentAbstract):
     )
 
 
-class NumberSlider(ComponentAbstract):
+class Component(AbstractComponentWithId):
+    Id: int = Field(
+        ...,
+        description="A unique identifier for the component, starting from 1 "
+                    "and counting upwards"
+    )
+
+
+class NumberSlider(AbstractComponentWithId):
     Name: Literal["Number Slider"]
     Value: str = Field(
         None,
@@ -60,7 +59,7 @@ class NumberSlider(ComponentAbstract):
     )
 
 
-class Panel(ComponentAbstract):
+class Panel(AbstractComponentWithId):
     Name: Literal["Panel"]
     Value: str = Field(
         None,
@@ -70,7 +69,7 @@ class Panel(ComponentAbstract):
     )
 
 
-class Point(ComponentAbstract):
+class Point(AbstractComponentWithId):
     Name: Literal["Point"]
     Value: str = Field(
         None,
@@ -128,10 +127,65 @@ class Strategy(BaseModel):
         description="step by step rational explaining how the script will "
                     "acheive the aim, including the main components used"
     )
-    Components: List[Union[NumberSlider, Panel, Point, Component]] = Field(
+    Components: List[str] = Field(
         ...,
         description="A list of components to be added to the configuration"
     )
+
+    @field_validator("Components")
+    @classmethod
+    def validate_components_exist(cls, v):
+        errors: List[InitErrorDetails] = []
+
+        for c in v:
+            name_list = [component.Name
+                         for component in valid_components.Components]
+            if c not in name_list \
+               and \
+               c not in ['Number Slider', 'Panel', 'Point']:
+                errors.append(InitErrorDetails(
+                    type=PydanticCustomError(
+                        "",
+                        f"""
+                        The component '{c}' could not be found,
+                        either there is a typo or it does not exist.
+                        Did you mean any of these: {get_k_nearest_components(
+                            k=5, query=c, choices=valid_components
+                        )}?
+                        Please substitute the component for the actual
+                        component that you require only if they are equivalent!
+                        If no equivalent component is found consider redefining
+                        the strategy and 'ChainOfThought' from scratch!
+                        """
+                    )
+                ))
+        if len(errors) > 0:
+            raise ValidationError.from_exception_data(
+                title='Components',
+                line_errors=errors,
+            )
+        return v
+
+
+def get_k_nearest_components(
+    k: int,
+    query: str,
+    choices: ValidComponents
+):
+    """
+    Uses fuzzy string matching to get the k closest matches to an input string
+    """
+    matches_strings = process.extract(
+        query,
+        [c.Name for c in choices.Components],
+        limit=k
+    )
+    matches_components = [find_valid_component_by_name(
+        valid_components=choices,
+        name=match[0],
+        errors=[]
+    ) for match in matches_strings]
+    return [f"'{c.Name}' ({c.Description})" for c in matches_components]
 
 
 class GrasshopperScriptModel(BaseModel):
@@ -248,13 +302,6 @@ class GrasshopperScriptModel(BaseModel):
         return script_component.Name
 
 
-class Components(BaseModel):
-    Components: List[Union[ComponentAbstract, NumberSlider, Panel, Point]] = Field(
-        ...,
-        description="A list of components to be added to the script"
-    )
-
-
 class Example(BaseModel):
     Description: str
     GrasshopperScriptModel: GrasshopperScriptModel
@@ -277,7 +324,7 @@ def find_valid_component_by_name(
     if valid_component is None:
         # this should not happen as the component name is validated
         # before this validation
-        errors.append(None, InitErrorDetails(
+        errors.append(InitErrorDetails(
             type=PydanticCustomError(
                 "",
                 f"Component with name {name} not found")

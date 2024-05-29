@@ -11,3 +11,5 @@ langsmith
 nest_asyncio
 nbstripout
 pre-commit
+fuzzywuzzy
+python-Levenshtein
