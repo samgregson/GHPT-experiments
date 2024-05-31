@@ -1,3 +1,4 @@
+import textwrap
 from pydantic import (
     BaseModel,
     Field,
@@ -5,7 +6,7 @@ from pydantic import (
     field_validator,
     model_validator
 )
-from typing import List, Literal, Union
+from typing import List, Literal, Optional, Union
 from pydantic_core import InitErrorDetails, PydanticCustomError
 from data.components import ValidComponents, load_components, ValidComponent
 from fuzzywuzzy import process
@@ -365,3 +366,18 @@ def find_valid_parameter_by_name(
             )
         ))
     return valid_parameter
+
+
+class StrategyRating(BaseModel):
+    reasoning: str = Field(..., description=textwrap.dedent("""
+        The step by step reasoning for the rating.
+        Consider very carefully any component validation errors and
+        whether any substitutions would faithfully represent the original
+        strategy. Explain each one in turn.
+    """))
+    susbstitution_recommendations: Optional[List[str]] = Field(
+        ...,
+        description="The recommended substitutions for the components."
+        " One for each error"
+    )
+    value: int = Field(..., description="The rating value from 0 to 10.")

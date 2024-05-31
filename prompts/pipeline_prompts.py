@@ -1,5 +1,7 @@
 import json
-from models.models import Example, Strategy
+from typing import List
+from data.components import ValidComponent
+from models.models import Example, Strategy, find_valid_component_by_name
 from prompts.examples import example_1, example_2, example_3
 
 
@@ -83,3 +85,41 @@ strategy.
 """.format(EXAMPLES=format_strategy_examples(
     [example_1, example_2, example_3]
 ))
+
+
+follow_up_system_template = """
+You are a Grasshopper3d Expert and are going to help create a Grasshopper
+definition.
+You will be given the following:
+- Description of the script to create
+- A strategy for creating the script
+- Some potential components to be used in the script
+
+<examples>
+{EXAMPLES}
+</examples>
+""".format(EXAMPLES=format_strategy_examples(
+    [example_1, example_2, example_3]
+))
+
+
+def get_description_strategy_template(user_prompt: str, strategy: Strategy):
+    description = user_prompt
+    strategy_str = strategy.ChainOfThought
+    components: List[ValidComponent] = [find_valid_component_by_name(c)
+                                        for c in strategy.Components]
+    components_str = ''
+    for c in components:
+        components_str += c.model_dump_json()
+
+    return """
+    Description: {DESCRIPTION}
+    ===
+    Strategy: {STRATEGY}
+    ===
+    Components: {COMPONENTS}
+    """.format(
+        DESCRIPTION=description,
+        STRATEGY=strategy_str,
+        COMPONENTS=components_str
+    )
