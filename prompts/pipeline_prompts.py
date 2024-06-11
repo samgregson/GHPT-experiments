@@ -69,11 +69,30 @@ description_template = """
 description: {DESCRIPTION}
 """
 
+strategy_prompt_template = """
+# description:
+{DESCRIPTION}
+
+# problem statement:
+{PROBLEM_STATEMENT}
+"""
+
+problem_statement_system_template = """
+You are a Grasshopper3d Expert and are going to help create a Grasshopper
+definition.
+"""
+
 
 strategy_system_template = """
 You are a Grasshopper3d Expert and are going to help create a Grasshopper
 definition.
-You will be given a description of the script to create.
+You will be given a description of the script to create, required input and
+output, and you may also be given some feedback and advice.
+
+Make sure you follow the expected inputs and outputs.
+If any advice is provided make sure you consider this carefully in defining
+your strategy.
+
 - First, you must provide a concise and well defined strategy for how to
 approach the grasshopper script.
 - Next provide a list of the essential components required to execute the

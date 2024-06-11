@@ -1,16 +1,18 @@
 import textwrap
-from typing import List, Optional, Union
+from typing import Union
 from instructor import AsyncInstructor, Instructor
 from langsmith import traceable
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from prompts.pipeline_prompts import (
     get_description_strategy_template,
     description_template,
     follow_up_system_template,
-    strategy_system_template
+    strategy_system_template,
+    problem_statement_system_template,
+    strategy_prompt_template
 )
 from openai.types.chat import ChatCompletion
-from models.models import GrasshopperScriptModel, Strategy, StrategyRating
+from models.models import GrasshopperScriptModel, ProblemStatement, Strategy, StrategyRating
 from instructor.retry import InstructorRetryException
 
 
@@ -69,9 +71,15 @@ async def run_pipeline(
         [type]: The completion response.
     """
 
-    strategy: Strategy = await pipe_strategy(
+    problem_statement = await pipe_problem_statement(
         client=client,
         user_prompt=user_prompt
+    )
+
+    strategy: Strategy = await pipe_strategy(
+        client=client,
+        user_prompt=user_prompt,
+        problem_statement=problem_statement
     )
 
     response = await call_openai_instructor(
@@ -88,9 +96,34 @@ async def run_pipeline(
 
 
 @traceable
+async def pipe_problem_statement(
+    client: Union[AsyncInstructor, Instructor],  # Union[OpenAI, AsyncOpenAI],
+    user_prompt: str,
+) -> ProblemStatement:
+    prompt = description_template.format(DESCRIPTION=user_prompt)
+    system_prompt: str = problem_statement_system_template
+    model: str = "gpt-3.5-turbo-1106"
+    temperature: float = 0
+    response_model: BaseModel = ProblemStatement
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": prompt}
+    ]
+    response: Strategy = await client.chat.completions.create(
+        model=model,
+        messages=messages,
+        temperature=temperature,
+        response_model=response_model,
+        max_retries=0
+    )
+    return response
+
+
+@traceable
 async def pipe_strategy(
     client: Union[AsyncInstructor, Instructor],  # Union[OpenAI, AsyncOpenAI],
     user_prompt: str,
+    problem_statement: ProblemStatement
 ) -> Strategy:
     """
     Generates a strategy based on the given user prompt.
@@ -109,7 +142,10 @@ async def pipe_strategy(
 
     """
 
-    prompt = description_template.format(DESCRIPTION=user_prompt)
+    prompt = strategy_prompt_template.format(
+        DESCRIPTION=user_prompt,
+        PROBLEM_STATEMENT=problem_statement.model_dump_json()
+    )
     system_prompt: str = strategy_system_template
     model: str = "gpt-3.5-turbo-1106"
     temperature: float = 0

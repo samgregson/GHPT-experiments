@@ -125,16 +125,21 @@ class Connection(BaseModel):
 
 class Strategy(BaseModel):
     """
-    Strategy for creating a grasshopper script
+    Detailed and concise Strategy for creating a grasshopper script
     """
     ChainOfThought: str = Field(
         ...,
         description="step by step rational explaining how the script will "
-                    "acheive the aim, including the main components used"
+        "acheive the aim, including the main components used."
+        "Be specific, avoid making vague statements."
+        "This strategy needs to give specific instructions that can easily"
+        "be carried out by a novice grasshopper user, without the need to"
+        "infer any details"
     )
     Components: List[str] = Field(
         ...,
-        description="A list of components to be added to the configuration"
+        description="A list of valid grasshopper components to be added"
+        "to the configuration"
     )
 
     @field_validator("Components")
@@ -354,15 +359,61 @@ def find_valid_parameter_by_name(
 
 
 class StrategyRating(BaseModel):
-    reasoning: str = Field(..., description=textwrap.dedent("""
-        The step by step reasoning for the rating.
-        Consider very carefully any component validation errors and
-        whether any substitutions would faithfully represent the original
-        strategy. Explain each one in turn.
-    """))
+    problem_statement_adherance: str = Field(
+        ...,
+        description=textwrap.dedent(
+            """
+            describe how well the script addresses the expected inputs
+            and outputs, and assumptions, as outlined in the problem
+            statement
+            """
+        )
+    )
+    detail: str = Field(
+        ...,
+        description=textwrap.dedent(
+            """
+            describe if the script provides enough detail to be easily
+            implemented by a novice user.
+            """
+        )
+    )
+    reasoning: str = Field(
+        ...,
+        description=textwrap.dedent(
+            """
+            The step by step reasoning for the rating.
+            Consider very carefully any component validation errors and
+            whether any substitutions would faithfully represent the original
+            strategy. Explain each one in turn.
+            """
+        )
+    )
     susbstitution_recommendations: Optional[List[str]] = Field(
         ...,
         description="The recommended substitutions for the components."
         " One for each error"
     )
+    other_advice: Optional[str] = Field(
+        ...,
+        description="any other advice to address any issues mentioned in"
+        "reasoning"
+    )
     value: int = Field(..., description="The rating value from 0 to 10.")
+
+
+class ProblemStatement(BaseModel):
+    inputs: List[str] = Field(
+        ...,
+        description="list of all inputs required for the script to function"
+    )
+    outputs: List[str] = Field(
+        ...,
+        description="expected outputs of the script based on the description"
+    )
+    assumptions: Optional[List[str]] = Field(
+        ...,
+        description="any assumptions that you need to make before getting"
+        "started"
+    )
+
