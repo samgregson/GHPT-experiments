@@ -8,10 +8,14 @@ from pydantic import (
 )
 from typing import List, Literal, Optional, Union
 from pydantic_core import InitErrorDetails, PydanticCustomError
-from data.components import ValidComponents, load_components, ValidComponent
-from fuzzywuzzy import process
+from data.components import (
+    ValidComponents,
+    get_components_with_embeddings,
+    get_k_nearest_components,
+    ValidComponent
+)
 
-valid_components = load_components()
+valid_components = get_components_with_embeddings()
 
 
 class ComponentNames(BaseModel):
@@ -151,7 +155,9 @@ class Strategy(BaseModel):
                         The component '{c}' could not be found,
                         either there is a typo or it does not exist.
                         Did you mean any of these: {get_k_nearest_components(
-                            k=5, query=c, choices=valid_components
+                            k=5,
+                            query=c,
+                            valid_components_with_embeddings=valid_components
                         )}?
                         Please substitute the component for the actual
                         component that you require only if they are equivalent!
@@ -166,27 +172,6 @@ class Strategy(BaseModel):
                 line_errors=errors,
             )
         return v
-
-
-def get_k_nearest_components(
-    k: int,
-    query: str,
-    choices: ValidComponents
-):
-    """
-    Uses fuzzy string matching to get the k closest matches to an input string
-    """
-    matches_strings = process.extract(
-        query,
-        [c.Name for c in choices.Components],
-        limit=k
-    )
-    matches_components = [find_valid_component_by_name(
-        valid_components=choices,
-        name=match[0],
-        errors=[]
-    ) for match in matches_strings]
-    return [f"'{c.Name}' ({c.Description})" for c in matches_components]
 
 
 class GrasshopperScriptModel(BaseModel):

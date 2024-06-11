@@ -1,6 +1,6 @@
 import json
 from typing import List
-from data.components import ValidComponent
+from data.components import ValidComponent, load_components
 from models.models import Example, Strategy, find_valid_component_by_name
 from prompts.examples import example_1, example_2, example_3
 
@@ -98,16 +98,28 @@ You will be given the following:
 <examples>
 {EXAMPLES}
 </examples>
-""".format(EXAMPLES=format_strategy_examples(
+""".format(EXAMPLES=format_script_examples(
     [example_1, example_2, example_3]
 ))
 
 
+valid_components = load_components()
+
+
 def get_description_strategy_template(user_prompt: str, strategy: Strategy):
+    '''
+    Template for Description, Strategy, Component (details)
+    To be used for generating the grasshopper script.
+    '''
     description = user_prompt
     strategy_str = strategy.ChainOfThought
-    components: List[ValidComponent] = [find_valid_component_by_name(c)
-                                        for c in strategy.Components]
+    components: List[ValidComponent] = \
+        [find_valid_component_by_name(
+            valid_components=valid_components,
+            name=c,
+            errors=[]
+        )
+        for c in strategy.Components]
     components_str = ''
     for c in components:
         components_str += c.model_dump_json()

@@ -1,5 +1,7 @@
+from dotenv import load_dotenv
 from openai import OpenAI, AsyncOpenAI
 from openai.types.chat import ChatCompletion
+from openai.types import CreateEmbeddingResponse
 from typing_extensions import Union, overload, ParamSpec
 from functools import wraps
 import inspect
@@ -7,7 +9,7 @@ import requests
 from typing import Callable, Any
 
 T_ParamSpec = ParamSpec("T_ParamSpec")
-
+load_dotenv()
 
 @overload
 def patch_openai(client: OpenAI) -> OpenAI: ...
@@ -40,10 +42,11 @@ def patch_openai(
             is_coroutine = is_coroutine or inspect.iscoroutinefunction(func)
         return is_coroutine
 
-    func = client.chat.completions.create
-    func_is_async = is_async(func)
+    # Chat Completions:
+    chat_func = client.chat.completions.create
+    chat_func_is_async = is_async(chat_func)
 
-    def call(*args, **kwargs):
+    def call_chat(*args, **kwargs):
         body = {"kwargs": kwargs, "base_url": str(client.base_url)}
         request_url = "https://fastapi-production-e161.up.railway.app/chat"
 
@@ -56,19 +59,52 @@ def patch_openai(
         # Create a ChatCompletion object from the dictionary
         chat_completion = ChatCompletion.model_validate_json(response.content)
 
-        return chat_completion  # ChatCompletion(json.loads(response.content))
+        return chat_completion
 
-    @wraps(func)
+    @wraps(chat_func)
     async def new_create_async(*args, **kwargs):
-        response = call(*args, **kwargs)
+        response = call_chat(*args, **kwargs)
         return response
 
-    @wraps(func)
+    @wraps(chat_func)
     def new_create_sync(*args, **kwargs):
-        response = call(*args, **kwargs)
+        response = call_chat(*args, **kwargs)
         return response
 
-    new_create = new_create_async if func_is_async else new_create_sync
+    new_create = new_create_async if chat_func_is_async else new_create_sync
+
+    # Embeddings:
+    embeddings_func = client.embeddings.create
+    embeddings_func_is_async = is_async(embeddings_func)
+
+    def call_embeddings(*args, **kwargs):
+        body = {"kwargs": kwargs, "base_url": str(client.base_url)}
+        request_url = "https://fastapi-production-e161.up.railway.app/embeddings"
+
+        headers = {
+            "api_key": api_key
+        }
+
+        response = requests.post(url=request_url, json=body, headers=headers)
+
+        # Create a ChatCompletion object from the dictionary
+        embedding_response = CreateEmbeddingResponse.model_validate_json(response.content)
+
+        return embedding_response
+
+    @wraps(chat_func)
+    async def new_embeddings_async(*args, **kwargs):
+        response = call_embeddings(*args, **kwargs)
+        return response
+
+    @wraps(chat_func)
+    def new_embeddings_sync(*args, **kwargs):
+        response = call_embeddings(*args, **kwargs)
+        return response
+
+    new_embeddings = new_embeddings_async if embeddings_func_is_async else new_embeddings_sync
 
     client.chat.completions.create = new_create
+    client.embeddings.create = new_embeddings
+
     return client

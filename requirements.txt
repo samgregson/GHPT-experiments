@@ -1,6 +1,7 @@
 setuptools
 openai
 requests
+numpy
 python-dotenv
 instructor
 anthropic
