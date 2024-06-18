@@ -156,7 +156,7 @@ class Strategy(BaseModel):
                 errors.append(InitErrorDetails(
                     type=PydanticCustomError(
                         "",
-                        f"""
+                        textwrap.dedent(f"""
                         The component '{c}' could not be found,
                         either there is a typo or it does not exist.
                         Did you mean any of these: {get_k_nearest_components(
@@ -164,11 +164,11 @@ class Strategy(BaseModel):
                             query=c,
                             valid_components_with_embeddings=valid_components
                         )}?
-                        Please substitute the component for the actual
+                        Substitute the component for the actual
                         component that you require only if they are equivalent!
                         If no equivalent component is found consider redefining
                         the strategy and 'ChainOfThought' from scratch!
-                        """
+                        """)
                     )
                 ))
         if len(errors) > 0:

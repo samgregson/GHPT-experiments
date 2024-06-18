@@ -3,7 +3,7 @@ openai
 requests
 numpy
 python-dotenv
-instructor
+instructor==1.3.2
 anthropic
 nbformat
 nbconvert

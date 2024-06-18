@@ -12,7 +12,12 @@ from prompts.pipeline_prompts import (
     strategy_prompt_template
 )
 from openai.types.chat import ChatCompletion
-from models.models import GrasshopperScriptModel, ProblemStatement, Strategy, StrategyRating
+from models.models import (
+    GrasshopperScriptModel,
+    ProblemStatement,
+    Strategy,
+    StrategyRating
+)
 from instructor.retry import InstructorRetryException
 
 
@@ -156,8 +161,8 @@ async def pipe_strategy(
     ]
     error = False
 
-    # generate initial strategy
     try:
+        # generate initial strategy
         response: Strategy = await client.chat.completions.create(
             model=model,
             messages=messages,
@@ -165,12 +170,14 @@ async def pipe_strategy(
             response_model=response_model,
             max_retries=0
         )
-    # return the last completion if there is an error
     except InstructorRetryException as e:
+        # return the last completion if there is an error
         error = True
+        print('error caught')
         completion: ChatCompletion = e.last_completion
         response = completion.choices[0].message
 
+    print(response)
     # create message history for rating call
     rating_messages = [
         {"role": "system", "content":

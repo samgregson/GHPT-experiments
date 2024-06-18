@@ -1,4 +1,5 @@
 import json
+import textwrap
 from typing import List
 from data.components import ValidComponent, load_components
 from models.models import Example, Strategy, find_valid_component_by_name
@@ -32,15 +33,17 @@ def format_strategy_examples(examples: list[str]) -> str:
         example_model = Example.model_validate(json.loads(example))
         description = example_model.Description
         script_model = example_model.GrasshopperScriptModel
-        formatted_examples += f"""
-        description: {description}
-        strategy: {
+        formatted_examples += textwrap.dedent(f"""
+        # Description
+        {description}
+        # Strategy
+        {
             Strategy(
                 ChainOfThought=script_model.ChainOfThought,
                 Components=[c.Name for c in script_model.Components]
             ).model_dump_json()
         }
-        """ + "\n\n"
+        """) + "\n\n"
     return formatted_examples
 
 
@@ -66,14 +69,15 @@ Here are some examples of expected output
 
 
 description_template = """
-description: {DESCRIPTION}
+# Description
+{DESCRIPTION}
 """
 
 strategy_prompt_template = """
-# description:
+# Description
 {DESCRIPTION}
 
-# problem statement:
+# Problem Statement
 {PROBLEM_STATEMENT}
 """
 
@@ -144,11 +148,14 @@ def get_description_strategy_template(user_prompt: str, strategy: Strategy):
         components_str += c.model_dump_json()
 
     return """
-    Description: {DESCRIPTION}
+    # Description
+    {DESCRIPTION}
     ===
-    Strategy: {STRATEGY}
+    # Strategy
+    {STRATEGY}
     ===
-    Components: {COMPONENTS}
+    # Components
+    {COMPONENTS}
     """.format(
         DESCRIPTION=description,
         STRATEGY=strategy_str,

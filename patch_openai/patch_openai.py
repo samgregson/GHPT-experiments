@@ -11,6 +11,7 @@ from typing import Callable, Any
 T_ParamSpec = ParamSpec("T_ParamSpec")
 load_dotenv()
 
+
 @overload
 def patch_openai(client: OpenAI) -> OpenAI: ...
 
@@ -54,7 +55,12 @@ def patch_openai(
             "api_key": api_key
         }
 
-        response = requests.post(url=request_url, json=body, headers=headers)
+        response = requests.post(
+            url=request_url,
+            json=body,
+            headers=headers,
+            verify=False
+        )
 
         # Create a ChatCompletion object from the dictionary
         chat_completion = ChatCompletion.model_validate_json(response.content)
@@ -85,7 +91,12 @@ def patch_openai(
             "api_key": api_key
         }
 
-        response = requests.post(url=request_url, json=body, headers=headers)
+        response = requests.post(
+            url=request_url,
+            json=body,
+            headers=headers,
+            verify=False
+        )
 
         # Create a ChatCompletion object from the dictionary
         embedding_response = CreateEmbeddingResponse.model_validate_json(response.content)
