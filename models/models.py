@@ -125,7 +125,7 @@ class Connection(BaseModel):
 
 class Strategy(BaseModel):
     """
-    Detailed and concise Strategy for creating a grasshopper script.
+    Detailed and concise Strategy for creating a grasshopper script. 
     Make sure to include number slides for inputs where relevant.
     """
     ChainOfThought: str = Field(
@@ -412,7 +412,7 @@ class StrategyRating(BaseModel):
 
 
 class ProblemStatement(BaseModel):
-    inputs: List[str] = Field(
+    inputs: List[Union[Panel,NumberSlider,Point]] = Field(
         ...,
         description="list of all inputs required for the script to function"
     )
