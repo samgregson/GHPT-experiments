@@ -1,6 +1,7 @@
 import textwrap
 from typing import Union
 from instructor import AsyncInstructor, Instructor
+import instructor
 from langsmith import traceable
 from pydantic import BaseModel
 from prompts.pipeline_prompts import (
@@ -153,6 +154,7 @@ async def pipe_strategy(
     )
     system_prompt: str = strategy_system_template
     model: str = "gpt-3.5-turbo-1106"
+    gpt4_turbo: str = "gpt-4-turbo"
     temperature: float = 0
     response_model: BaseModel = Strategy
     messages = [
@@ -161,32 +163,45 @@ async def pipe_strategy(
     ]
     error = False
 
+    response = None
+    response_json = None
     try:
         # generate initial strategy
         response: Strategy = await client.chat.completions.create(
-            model=model,
+            model=gpt4_turbo,
             messages=messages,
             temperature=temperature,
             response_model=response_model,
             max_retries=0
         )
+        response_json = response.model_dump_json()
+        # replace 'tool' roles with assistant
+        messages[-1] = {"role": "assistant", "content": response_json}
     except InstructorRetryException as e:
         # return the last completion if there is an error
         error = True
-        print('error caught')
         completion: ChatCompletion = e.last_completion
-        response = completion.choices[0].message
+        if client.mode == instructor.Mode.TOOLS:
+            response_json = \
+                completion.choices[0].message.tool_calls[0].function.arguments
+        else:
+            response_json = completion.choices[0].message.content
+        # response = response_model.model_validate_json(response_json)
 
-    print(response)
+        # replace 'tool' roles with assistant and user
+        messages[-2] = {"role": "assistant", "content": response_json}
+        messages[-1] = {"role": "user", "content": str(e)}
+
     # create message history for rating call
     rating_messages = [
         {"role": "system", "content":
          "You are a Grasshopper3d expert. Please rate the strategy."},
         *messages[1:],
-        {"role": "user", "content":
-         "Does the above strategy look correct? Answer with a single number "
-         "from 0 to 10 with no preamble. Where 0 is not at all and 10 is "
-         "perfect."}
+        {"role": "user", "content": textwrap.dedent(
+            """
+            Does the above strategy look correct? Evaluate and then score
+            """
+        )}
     ]
     rating_response: StrategyRating = await client.chat.completions.create(
         model=model,
@@ -197,10 +212,11 @@ async def pipe_strategy(
     )
 
     # create a new strategy based on feedback
-    if rating_response.value < 5 or error is True:
+    if rating_response.score < 5 or error is True:
         messages.append({
-            "role": "user", "content": rating_response.reasoning +
-            ", ".join(rating_response.susbstitution_recommendations)
+            "role": "user", "content": rating_response.validation_errors +
+            # ", ".join(rating_response.susbstitution_recommendations)
+            rating_response.model_dump_json()
         })
         response: ChatCompletion = await client.chat.completions.create(
             model=model,

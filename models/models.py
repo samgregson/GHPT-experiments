@@ -130,7 +130,7 @@ class Strategy(BaseModel):
     ChainOfThought: str = Field(
         ...,
         description="step by step rational explaining how the script will "
-        "acheive the aim, including the main components used."
+        "acheive the aim, including the all components used."
         "Be specific, avoid making vague statements."
         "This strategy needs to give specific instructions that can easily"
         "be carried out by a novice grasshopper user, without the need to"
@@ -360,46 +360,54 @@ def find_valid_parameter_by_name(
 
 class StrategyRating(BaseModel):
     problem_statement_adherance: str = Field(
-        ...,
-        description=textwrap.dedent(
+        ..., description=textwrap.dedent(
             """
-            describe how well the script addresses the expected inputs
-            and outputs, and assumptions, as outlined in the problem
-            statement
+            in words, critically describe how well the script addresses the
+            expected inputs and outputs, and assumptions, as outlined in the problem
+            statement.
             """
         )
     )
     detail: str = Field(
-        ...,
-        description=textwrap.dedent(
+        ..., description=textwrap.dedent(
             """
-            describe if the script provides enough detail to be easily
-            implemented by a novice user.
+            in words, critically describe whether the strategy provides enough detail
+            in each step of the plan to achieve the goals
+            to be easily implemented by a novice user.
             """
         )
     )
-    reasoning: str = Field(
-        ...,
-        description=textwrap.dedent(
+    validation_errors: str = Field(
+        ..., description=textwrap.dedent(
             """
-            The step by step reasoning for the rating.
-            Consider very carefully any component validation errors and
-            whether any substitutions would faithfully represent the original
-            strategy. Explain each one in turn.
+            In words critically consider very carefully any component validation errors
+            and whether any substitutions would faithfully represent the
+            original strategy. Explain each one in turn.
             """
         )
     )
     susbstitution_recommendations: Optional[List[str]] = Field(
-        ...,
-        description="The recommended substitutions for the components."
-        " One for each error"
+        ..., description=textwrap.dedent(
+            """
+            The recommended substitutions for the components.
+            One for each error
+            """
+        )
     )
     other_advice: Optional[str] = Field(
-        ...,
-        description="any other advice to address any issues mentioned in"
-        "reasoning"
+        ..., description=textwrap.dedent(
+            """
+            any other advice to address any issues mentioned in
+            reasoning
+            """
+        )
     )
-    value: int = Field(..., description="The rating value from 0 to 10.")
+    score: int = Field(..., description=textwrap.dedent(
+            """
+            The score considering all of the above from 0 to 10.
+            """
+        )
+    )
 
 
 class ProblemStatement(BaseModel):
@@ -416,4 +424,3 @@ class ProblemStatement(BaseModel):
         description="any assumptions that you need to make before getting"
         "started"
     )
-
