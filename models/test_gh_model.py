@@ -9,7 +9,7 @@ def test_gh_model_pass():
         "input to set the radius",
         "Advice": "Adjust the radius of the sphere using a number slider for"
         "desired size",
-        "Additions": [
+        "Components": [
             {
                 "Name": "Sphere",
                 "Id": 1
@@ -46,7 +46,7 @@ def test_gh_model_component_fail():
         "input to set the radius",
         "Advice": "Adjust the radius of the sphere using a number slider for"
         "desired size",
-        "Additions": [
+        "Components": [
             {
                 "Name": "Sphere",
                 "Id": 1
@@ -82,7 +82,7 @@ def test_gh_model_value_fail():
         "input to set the radius",
         "Advice": "Adjust the radius of the sphere using a number slider for"
         "desired size",
-        "Additions": [
+        "Components": [
             {
                 "Name": "Sphere",
                 "Id": 1,

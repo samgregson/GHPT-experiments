@@ -126,7 +126,7 @@ class Connection(BaseModel):
 class Strategy(BaseModel):
     """
     Detailed and concise Strategy for creating a grasshopper script. 
-    Make sure to include number slides for inputs where relevant.
+    Make sure to include number sliders for inputs where relevant.
     """
     ChainOfThought: str = Field(
         ...,
@@ -135,7 +135,7 @@ class Strategy(BaseModel):
         "Be specific, avoid making vague statements."
         "This strategy needs to give specific instructions that can easily"
         "be carried out by a novice grasshopper user, without the need to"
-        "infer any details. Make sure to include number slides for inputs where relevant."
+        "infer any details. Make sure to include number sliders for inputs where relevant."
     )
     Components: List[str] = Field(
         ...,
@@ -298,6 +298,9 @@ class Example(BaseModel):
     Description: str
     GrasshopperScriptModel: GrasshopperScriptModel
 
+
+class Examples(BaseModel): 
+    Examples: List[Example]
 
 def find_valid_component_by_name(
     valid_components: ValidComponents,

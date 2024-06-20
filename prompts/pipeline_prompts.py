@@ -3,7 +3,7 @@ import textwrap
 from typing import List
 from data.components import ValidComponent, load_components
 from models.models import Example, Strategy, find_valid_component_by_name
-from data.examples_loading import load_examples
+from data.examples import load_examples
 
 
 def format_script_examples(examples: list[str]) -> str:
@@ -96,7 +96,7 @@ You are a Grasshopper3d Expert and are going to help create a Grasshopper
 definition.
 """
 
-#- You will be provided a problem statement. Include number slides for the inputs where required.
+#- You will be provided a problem statement. Include number sliders for the inputs where required.
 strategy_system_template = """
 You are a Grasshopper3d Expert and are going to help create a Grasshopper
 definition.
