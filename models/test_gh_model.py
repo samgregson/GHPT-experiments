@@ -28,7 +28,7 @@ def test_gh_model_pass():
                 },
                 "From": {
                     "Id": 2,
-                    "ParameterName": "Number"
+                    "ParameterName": "Value"
                 }
             }
         ]
