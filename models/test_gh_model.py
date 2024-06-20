@@ -65,7 +65,7 @@ def test_gh_model_component_fail():
                 },
                 "From": {
                     "Id": 2,
-                    "ParameterName": "Number"
+                    "ParameterName": "Value"
                 }
             }
         ]
@@ -102,7 +102,7 @@ def test_gh_model_value_fail():
                 },
                 "From": {
                     "Id": 2,
-                    "ParameterName": "Number"
+                    "ParameterName": "Value"
                 }
             }
         ]
