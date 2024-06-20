@@ -86,7 +86,7 @@ def test_gh_model_value_fail():
             {
                 "Name": "Sphere",
                 "Id": 1,
-                "Value": "5,3"
+                #"Value": "5,3"
             },
             {
                 "Name": "Number Slider",
