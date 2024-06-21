@@ -89,7 +89,7 @@ def test_gh_model_value_fail():
                 "Value": "5,3"
             },
             {
-                "Name": "Number Slider",
+                "Name": "Slider",
                 "Id": 2,
                 "Value": "5..50..100"
             }
@@ -102,7 +102,7 @@ def test_gh_model_value_fail():
                 },
                 "From": {
                     "Id": 2,
-                    "ParameterName": "Value"
+                    "ParameterName": "Number"
                 }
             }
         ]
