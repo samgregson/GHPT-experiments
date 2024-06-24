@@ -3,7 +3,7 @@ import textwrap
 from typing import List
 from data.components import ValidComponent, load_components
 from models.models import Example, Strategy, find_valid_component_by_name
-from prompts.examples import example_1, example_2, example_3
+from data.examples import load_examples
 
 
 def format_script_examples(examples: list[str]) -> str:
@@ -21,6 +21,10 @@ def format_script_examples(examples: list[str]) -> str:
         scriptModel: {scriptModel.model_dump_json()}
         """ + "\n\n"
     return formatted_examples
+
+
+
+examples = load_examples()
 
 
 def format_strategy_examples(examples: list[str]) -> str:
@@ -65,7 +69,10 @@ Here are some examples of expected output
 </examples>
 
 ===
-""".format(EXAMPLES=format_script_examples([example_1, example_2, example_3]))
+
+""".format(EXAMPLES=format_script_examples([e.model_dump_json() for e in examples.Examples]))
+
+# REPLACE THIS BIT WITH SEMANTIC EXAMPLE SEARCH ^
 
 
 description_template = """
@@ -86,7 +93,7 @@ You are a Grasshopper3d Expert and are going to help create a Grasshopper
 definition.
 """
 
-
+#- You will be provided a problem statement. Include number sliders for the inputs where required.
 strategy_system_template = """
 You are a Grasshopper3d Expert and are going to help create a Grasshopper
 definition.
@@ -101,12 +108,13 @@ your strategy.
 approach the grasshopper script.
 - Next provide a list of the essential components required to execute the
 strategy.
+ 
 
 <examples>
 {EXAMPLES}
 </examples>
 """.format(EXAMPLES=format_strategy_examples(
-    [example_1, example_2, example_3]
+    [e.model_dump_json() for e in examples.Examples]
 ))
 
 
@@ -122,7 +130,7 @@ You will be given the following:
 {EXAMPLES}
 </examples>
 """.format(EXAMPLES=format_script_examples(
-    [example_1, example_2, example_3]
+    [e.model_dump_json() for e in examples.Examples]
 ))
 
 

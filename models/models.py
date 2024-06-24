@@ -56,7 +56,7 @@ class Component(AbstractComponentWithId):
 class NumberSlider(AbstractComponentWithId):
     Name: Literal["Number Slider"]
     Value: str = Field(
-        None,
+        "0..2..4",
         alias='Value',
         description="The range of values for the Number Slider. "
                     "In the format '<start>..<default>..<end>'. "
@@ -67,7 +67,7 @@ class NumberSlider(AbstractComponentWithId):
 class Panel(AbstractComponentWithId):
     Name: Literal["Panel"]
     Value: str = Field(
-        None,
+        "0,0,0",
         alias='Value',
         description="The text for the Panel Component. "
                     "In the format '<text>'"
@@ -125,7 +125,8 @@ class Connection(BaseModel):
 
 class Strategy(BaseModel):
     """
-    Detailed and concise Strategy for creating a grasshopper script
+    Detailed and concise Strategy for creating a grasshopper script. 
+    Make sure to include number sliders for inputs where relevant.
     """
     ChainOfThought: str = Field(
         ...,
@@ -134,7 +135,7 @@ class Strategy(BaseModel):
         "Be specific, avoid making vague statements."
         "This strategy needs to give specific instructions that can easily"
         "be carried out by a novice grasshopper user, without the need to"
-        "infer any details"
+        "infer any details. Make sure to include number sliders for inputs where relevant."
     )
     Components: List[str] = Field(
         ...,
@@ -298,6 +299,9 @@ class Example(BaseModel):
     GrasshopperScriptModel: GrasshopperScriptModel
 
 
+class Examples(BaseModel): 
+    Examples: List[Example]
+
 def find_valid_component_by_name(
     valid_components: ValidComponents,
     name: str,
@@ -411,7 +415,7 @@ class StrategyRating(BaseModel):
 
 
 class ProblemStatement(BaseModel):
-    inputs: List[str] = Field(
+    inputs: List[Union[Panel,NumberSlider,Point]] = Field(
         ...,
         description="list of all inputs required for the script to function"
     )
