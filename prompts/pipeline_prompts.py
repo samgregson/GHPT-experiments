@@ -37,12 +37,8 @@ def format_strategy_examples(examples: list[str]) -> str:
         # Description
         {description}
         # Strategy
-        {
-            Strategy(
-                ChainOfThought=script_model.ChainOfThought,
-                Components=[c.Name for c in script_model.Components]
-            ).model_dump_json()
-        }
+        {script_model.ChainOfThought}
+        {str([c.Name for c in script_model.Components])}
         """) + "\n\n"
     return formatted_examples
 
@@ -139,10 +135,10 @@ def get_description_strategy_template(user_prompt: str, strategy: Strategy):
     components: List[ValidComponent] = \
         [find_valid_component_by_name(
             valid_components=valid_components,
-            name=c,
+            name=c.ComponentName,
             errors=[]
         )
-        for c in strategy.Components]
+        for c in strategy.ChainOfThought]
     components_str = ''
     for c in components:
         components_str += c.model_dump_json()

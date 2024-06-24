@@ -154,7 +154,7 @@ async def pipe_strategy(
     )
     system_prompt: str = strategy_system_template
     model: str = "gpt-3.5-turbo-1106"
-    gpt4_turbo: str = "gpt-4-turbo"
+    gpt4o: str = "gpt-4o"
     temperature: float = 0
     response_model: BaseModel = Strategy
     messages = [
@@ -168,7 +168,7 @@ async def pipe_strategy(
     try:
         # generate initial strategy
         response: Strategy = await client.chat.completions.create(
-            model=gpt4_turbo,
+            model=model,
             messages=messages,
             temperature=temperature,
             response_model=response_model,

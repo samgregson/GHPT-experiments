@@ -123,45 +123,50 @@ class Connection(BaseModel):
     )
 
 
+class StrategyStep(BaseModel):
+    StepDescription: str
+    ComponentName: str
+
+
 class Strategy(BaseModel):
     """
     Detailed and concise Strategy for creating a grasshopper script
     """
-    ChainOfThought: str = Field(
+    ChainOfThought: List[StrategyStep] = Field(
         ...,
-        description="step by step rational explaining how the script will "
-        "acheive the aim, including the all components used."
-        "Be specific, avoid making vague statements."
-        "This strategy needs to give specific instructions that can easily"
-        "be carried out by a novice grasshopper user, without the need to"
-        "infer any details"
-    )
-    Components: List[str] = Field(
-        ...,
-        description="A list of valid grasshopper components to be added"
-        "to the configuration"
+        description=textwrap.dedent(
+            """
+            step by step plan explaining how the script will
+            acheive the aim, including the all components used.
+            Start by defining all inputs, e.g. sliders, points, or panels
+            Be specific, avoid making vague statements.
+            This strategy needs to give specific instructions that can easily
+            be carried out by a novice grasshopper user, without the need to
+            infer any details
+            """
+        )
     )
 
-    @field_validator("Components")
+    @field_validator("ChainOfThought")
     @classmethod
     def validate_components_exist(cls, v):
         errors: List[InitErrorDetails] = []
-
+        c: StrategyStep
         for c in v:
             name_list = [component.Name
                          for component in valid_components.Components]
-            if c not in name_list \
+            if c.ComponentName not in name_list \
                and \
-               c not in ['Number Slider', 'Panel', 'Point']:
+               c.ComponentName not in ['Number Slider', 'Panel', 'Point']:
                 errors.append(InitErrorDetails(
                     type=PydanticCustomError(
                         "",
                         textwrap.dedent(f"""
-                        The component '{c}' could not be found,
+                        The component '{c.ComponentName}' could not be found,
                         either there is a typo or it does not exist.
                         Did you mean any of these: {get_k_nearest_components(
                             k=5,
-                            query=c,
+                            query=f'${c.ComponentName}: ${c.StepDescription}',
                             valid_components_with_embeddings=valid_components
                         )}?
                         Substitute the component for the actual
@@ -359,38 +364,39 @@ def find_valid_parameter_by_name(
 
 
 class StrategyRating(BaseModel):
-    problem_statement_adherance: str = Field(
+    input_adherence: str = Field(
         ..., description=textwrap.dedent(
             """
-            in words, critically describe how well the script addresses the
-            expected inputs and outputs, and assumptions, as outlined in the problem
-            statement.
+            in words, and with reference to 'inputs' in the 'Problem Description'
+            critically evaluate if all inputs have been included in the plan.
+            e.g. as slider, point, or panel components
             """
         )
     )
-    detail: str = Field(
+    detail: List[str] = Field(
         ..., description=textwrap.dedent(
             """
-            in words, critically describe whether the strategy provides enough detail
-            in each step of the plan to achieve the goals
-            to be easily implemented by a novice user.
+            for each strategy step, in words, critically evaluate whether the
+            single component can truthefully implement everything in the steps
+            description.
             """
         )
     )
     validation_errors: str = Field(
         ..., description=textwrap.dedent(
             """
-            In words critically consider very carefully any component validation errors
-            and whether any substitutions would faithfully represent the
-            original strategy. Explain each one in turn.
+            In words critically consider very carefully any component
+            validation errors and whether any substitutions would
+            faithfully represent the original strategy.
+            Explain each one in turn.
             """
         )
     )
     susbstitution_recommendations: Optional[List[str]] = Field(
         ..., description=textwrap.dedent(
             """
-            The recommended substitutions for the components.
-            One for each error
+            For each validation error give one single recommended substitution
+            for the missing component
             """
         )
     )
@@ -412,8 +418,12 @@ class StrategyRating(BaseModel):
 
 class ProblemStatement(BaseModel):
     inputs: List[str] = Field(
-        ...,
-        description="list of all inputs required for the script to function"
+        ..., description=textwrap.dedent(
+            """
+            list of all inputs required for the script to function
+            e.g. Number Slider, Panel, Point components.
+            Include their assumed value if appropriate
+            """)
     )
     outputs: List[str] = Field(
         ...,
