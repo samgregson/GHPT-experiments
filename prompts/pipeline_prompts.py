@@ -51,11 +51,8 @@ def format_strategy_examples(examples: list[str]) -> str:
     return formatted_examples
 
 
-
-
-
 grasshopper_script_model_system_template = """
-You are a Grasshopper3d Expert and  are going to help create a Grasshopper
+You are a Grasshopper3d Expert and are going to help create a Grasshopper
 definition.
 You will be given a description of the script to create.
 Keep the answers short and concise.
@@ -73,7 +70,7 @@ Here are some examples of expected output
 
 ===
 
-#""".format(EXAMPLES=format_script_examples([e.model_dump_json() for e in examples.Examples]))
+""".format(EXAMPLES=format_script_examples([e.model_dump_json() for e in examples.Examples]))
 
 # REPLACE THIS BIT WITH SEMANTIC EXAMPLE SEARCH ^
 
