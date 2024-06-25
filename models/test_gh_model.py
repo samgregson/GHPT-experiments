@@ -89,7 +89,7 @@ def test_gh_model_value_fail():
                 "Value": "5,3"
             },
             {
-                "Name": "Slider",
+                "Name": "Number Slider",
                 "Id": 2,
                 "Value": "5..50..100"
             }
