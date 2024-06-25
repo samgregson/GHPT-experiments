@@ -59,7 +59,6 @@ def patch_openai(
             url=request_url,
             json=body,
             headers=headers,
-            verify=False
         )
 
         # Create a ChatCompletion object from the dictionary
@@ -95,7 +94,6 @@ def patch_openai(
             url=request_url,
             json=body,
             headers=headers,
-            verify=False
         )
 
         # Create a ChatCompletion object from the dictionary
