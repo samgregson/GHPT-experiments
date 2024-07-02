@@ -186,7 +186,6 @@ async def pipe_strategy(
                 completion.choices[0].message.tool_calls[0].function.arguments
         else:
             response_json = completion.choices[0].message.content
-        # response = response_model.model_validate_json(response_json)
 
         # replace 'tool' roles with assistant and user
         messages[-2] = {"role": "assistant", "content": response_json}
@@ -214,9 +213,8 @@ async def pipe_strategy(
     # create a new strategy based on feedback
     if rating_response.score < 5 or error is True:
         messages.append({
-            "role": "user", "content": rating_response.validation_errors +
-            # ", ".join(rating_response.susbstitution_recommendations)
-            rating_response.model_dump_json()
+            "role": "user",
+            "content": rating_response.model_dump_json()
         })
         response: ChatCompletion = await client.chat.completions.create(
             model=model,

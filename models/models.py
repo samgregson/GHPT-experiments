@@ -57,10 +57,22 @@ class NumberSlider(AbstractComponentWithId):
     Name: Literal["Number Slider"]
     Value: str = Field(
         "0..2..4",
-        alias='Value',
-        description="The range of values for the Number Slider. "
-                    "In the format '<start>..<default>..<end>'. "
-                    "Give a decent range of values to allow for flexibility"
+        description=textwrap.dedent(
+            """
+            The range of values for the Number Slider
+            In the format '<start>..<default>..<end>'
+            Give a decent range of values to allow for flexibility
+            If a specific value is required, set the default to that value
+            e.g. if the value should be 5, set the value to '0..5..10'
+            """),
+    )
+    NickName: Optional[str] = Field(
+        ...,
+        description=textwrap.dedent(
+            """A nickname for the Number Slider, if any, describing what the
+            'Number Slider' represents, e.g. 'height', 'x-spacing', 'radius'
+            etc.
+            """)
     )
 
 
@@ -124,8 +136,8 @@ class Connection(BaseModel):
 
 
 class StrategyStep(BaseModel):
-    StepDescription: str
     ComponentName: str
+    StepDescription: str
 
 
 class Strategy(BaseModel):
@@ -210,6 +222,31 @@ class GrasshopperScriptModel(BaseModel):
         description="A piece of advice or instruction related to using the "
                     "grasshopper script"
     )
+
+    @model_validator(mode='after')
+    def check_circular_ref(self):
+        """
+        Checks if there are any circular references in the connections
+        """
+        errors: List[InitErrorDetails] = []
+        for connection in self.Connections:
+            from_id = connection.From.Id
+            to_id = connection.To.Id
+            if from_id == to_id:
+                errors.append(InitErrorDetails(
+                    type=PydanticCustomError(
+                        "",
+                        f"Connection from component {from_id} to component "
+                        f"{to_id} is a circular reference. Please remove the "
+                        f"connection."
+                    )
+                ))
+        if len(errors) > 0:
+            raise ValidationError.from_exception_data(
+                title=self.__class__.__name__,
+                line_errors=errors,
+            )
+        return self
 
     @model_validator(mode='after')
     def validate_parameter_names(self):
@@ -307,6 +344,7 @@ class Example(BaseModel):
 class Examples(BaseModel): 
     Examples: List[Example]
 
+
 def find_valid_component_by_name(
     valid_components: ValidComponents,
     name: str,
@@ -368,6 +406,9 @@ def find_valid_parameter_by_name(
 
 
 class StrategyRating(BaseModel):
+    """
+    A critical and honest evaluation of the strategy.
+    """
     input_adherence: str = Field(
         ..., description=textwrap.dedent(
             """
@@ -377,30 +418,20 @@ class StrategyRating(BaseModel):
             """
         )
     )
-    detail: List[str] = Field(
+    susbstitution_recommendations: Optional[List[str]] = Field(
+        ..., description=textwrap.dedent(
+            """
+            For each validation error give one single recommended substitution
+            for the missing component, choose from the list of valid components
+            """
+        )
+    )
+    steps_validity: List[str] = Field(
         ..., description=textwrap.dedent(
             """
             for each strategy step, in words, critically evaluate whether the
             single component can truthefully implement everything in the steps
             description.
-            """
-        )
-    )
-    validation_errors: str = Field(
-        ..., description=textwrap.dedent(
-            """
-            In words critically consider very carefully any component
-            validation errors and whether any substitutions would
-            faithfully represent the original strategy.
-            Explain each one in turn.
-            """
-        )
-    )
-    susbstitution_recommendations: Optional[List[str]] = Field(
-        ..., description=textwrap.dedent(
-            """
-            For each validation error give one single recommended substitution
-            for the missing component
             """
         )
     )
@@ -421,12 +452,13 @@ class StrategyRating(BaseModel):
 
 
 class ProblemStatement(BaseModel):
-    inputs: List[Union[Panel,NumberSlider,Point]] = Field(
+    inputs: List[Union[Panel, NumberSlider, Point]] = Field(
         ..., description=textwrap.dedent(
             """
             list of all inputs required for the script to function
             e.g. Number Slider, Panel, Point components.
-            Include their assumed value if appropriate
+            If a value is given in the script description ensure
+            that it is included in the 'Value' field of the component
             """)
     )
     outputs: List[str] = Field(
