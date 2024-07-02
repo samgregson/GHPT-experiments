@@ -1,5 +1,9 @@
 import json
 import os
+import numpy as np
+import openai
+from patch_openai.patch_openai import patch_openai
+from typing import List
 from models.models import Examples
 
 def load_examples() -> Examples:
@@ -9,5 +13,87 @@ def load_examples() -> Examples:
         examples_json = json.load(f)
     return Examples.model_validate(examples_json)
 
+
+
+def get_examples_with_embeddings() -> Examples:
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    example_embeddings_json_path = os.path.join(dir_path, 'examples_embeddings.json')
+
+    if os.path.exists(example_embeddings_json_path):
+        # load from example_embeddings.json if file exists
+        with open(example_embeddings_json_path, 'r') as f:
+            examples_json = json.load(f)
+        return Examples.model_validate(examples_json) #this probably doesnt make sense
+    else:
+        # Generate embeddings for all example names
+        valid_examples = load_examples()
+        example_desc = [
+            f"{e.Description}" for e in valid_examples.Examples
+        ]
+
+        OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+        client = openai.OpenAI(api_key=OPENAI_API_KEY)
+        client = patch_openai(client)
+        response = client.embeddings.create(
+            model="text-embedding-3-small",
+            input=example_desc,
+            encoding_format="float"
+        )
+
+        embeddings = [d.embedding for d in response.data]
+
+        for e, embedding in zip(valid_examples.Examples, embeddings):
+            e.Embedding = embedding
+
+        # Save embeddings dictionary to JSON file
+        with open(example_embeddings_json_path, 'w') as f:
+            f.write(valid_examples.model_dump_json())
+
+        return valid_examples
+
+
+def get_k_nearest_examples(
+    k: int,
+    query: str,
+    valid_examples_with_embeddings: Examples
+):
+    """
+    Uses OpenAI Embeddings API to get the k closest matches to an input string
+    """
+
+    # Generate embedding for query
+    OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+    client = openai.OpenAI(api_key=OPENAI_API_KEY)
+    client = patch_openai(client)
+    response = client.embeddings.create(
+        model="text-embedding-3-small",
+        input=query,
+        encoding_format="float"
+    )
+
+    query_embedding = response.data[0].embedding
+
+    # Calculate similarity scores between query embedding and component
+    # embeddings
+    def cosine_similarity(a, b):
+        return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+    similarity_scores = []
+    for example in valid_examples_with_embeddings.Examples:
+        embedding = example.Embedding
+        similarity_score: float = cosine_similarity(query_embedding, embedding)
+        similarity_scores.append((example, similarity_score))
+
+    # Sort similarity scores in descending order
+    similarity_scores.sort(key=lambda x: x[1], reverse=True)
+
+    # Get top k closest matches
+    top_k_matches = similarity_scores[:k]
+
+    # Get component names and descriptions for top k matches
+    matched_examples: List[Examples] = [
+        e for e, _ in top_k_matches
+    ]
+    return [f"{e.Description}" for e in matched_examples]
 
 

@@ -15,7 +15,13 @@ from data.components import (
     ValidComponent
 )
 
+from data.examples import (
+    get_examples_with_embeddings,
+    get_k_nearest_examples
+)
+
 valid_components = get_components_with_embeddings()
+valid_examples = get_examples_with_embeddings()
 
 
 class ComponentNames(BaseModel):

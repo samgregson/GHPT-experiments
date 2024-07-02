@@ -3,7 +3,7 @@ import textwrap
 from typing import List
 from data.components import ValidComponent, load_components
 from models.models import Example, Strategy, find_valid_component_by_name
-from data.examples import load_examples
+from data.examples import load_examples, get_examples_with_embeddings
 
 
 def format_script_examples(examples: list[str]) -> str:
@@ -25,7 +25,7 @@ def format_script_examples(examples: list[str]) -> str:
 
 
 examples = load_examples()
-
+examples = get_examples_with_embeddings()
 
 def format_strategy_examples(examples: list[str]) -> str:
     """
@@ -73,7 +73,7 @@ Here are some examples of expected output
 """.format(EXAMPLES=format_script_examples([e.model_dump_json() for e in examples.Examples]))
 
 # REPLACE THIS BIT WITH SEMANTIC EXAMPLE SEARCH ^
-
+# Or instead, only return examples (from examples.py) that are the top 3 semantic matches?
 
 description_template = """
 # Description
