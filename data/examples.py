@@ -38,9 +38,9 @@ def get_examples_with_embeddings() -> Examples:
         return Examples.model_validate(examples_json) #this probably doesnt make sense
     else:
         # Generate embeddings for all example names
-        valid_examples = load_examples()
+        examples = load_examples()
         example_desc = [
-            f"{e.Description}" for e in valid_examples.Examples
+            f"{e.Description}" for e in examples.Examples
         ]
 
         OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
@@ -54,14 +54,14 @@ def get_examples_with_embeddings() -> Examples:
 
         embeddings = [d.embedding for d in response.data]
 
-        for e, embedding in zip(valid_examples.Examples, embeddings):
+        for e, embedding in zip(examples.Examples, embeddings):
             e.Embedding = embedding
 
         # Save embeddings dictionary to JSON file
         with open(example_embeddings_json_path, 'w') as f:
-            f.write(valid_examples.model_dump_json())
+            f.write(examples.model_dump_json())
 
-        return valid_examples
+        return examples
 
 
 def get_k_nearest_examples(
@@ -106,6 +106,6 @@ def get_k_nearest_examples(
     matched_examples: List[Examples] = [
         e for e, _ in top_k_matches
     ]
-    return [f"{e.Description}" for e in matched_examples]
+    return matched_examples
 
 

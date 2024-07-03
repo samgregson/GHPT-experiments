@@ -7,8 +7,8 @@ from pydantic import BaseModel
 from prompts.pipeline_prompts import (
     get_description_strategy_template,
     description_template,
-    follow_up_system_template,
-    strategy_system_template,
+    get_follow_up_system_template,
+    get_strategy_system_template,
     problem_statement_system_template,
     strategy_prompt_template
 )
@@ -20,7 +20,10 @@ from models.models import (
     StrategyRating
 )
 from data.examples import (
-    GrasshopperScriptModel
+    Example,
+    GrasshopperScriptModel,
+    get_examples_with_embeddings,
+    get_k_nearest_examples
 )
 from instructor.retry import InstructorRetryException
 
@@ -79,6 +82,7 @@ async def run_pipeline(
     Returns:
         [type]: The completion response.
     """
+    examples = pipe_get_examples()
 
     problem_statement = await pipe_problem_statement(
         client=client,
@@ -97,7 +101,7 @@ async def run_pipeline(
             user_prompt=user_prompt,
             strategy=strategy
         ),
-        system_prompt=follow_up_system_template
+        system_prompt=get_follow_up_system_template()
     )
 
     return response
@@ -155,7 +159,7 @@ async def pipe_strategy(
         DESCRIPTION=user_prompt,
         PROBLEM_STATEMENT=problem_statement.model_dump_json()
     )
-    system_prompt: str = strategy_system_template
+    system_prompt: str = get_strategy_system_template()
     model: str = "gpt-3.5-turbo-1106"
     gpt4_turbo: str = "gpt-4-turbo"
     temperature: float = 0
@@ -230,3 +234,12 @@ async def pipe_strategy(
         )
 
     return response
+
+
+
+
+@traceable
+def pipe_get_examples() -> Example:
+    input_embedding = get_k_nearest_examples(k=5, query=input, valid_examples_with_embeddings=get_examples_with_embeddings())
+    examples = input_embedding.Example
+    return examples
