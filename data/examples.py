@@ -2,9 +2,21 @@ import json
 import os
 import numpy as np
 import openai
+from pydantic import BaseModel
 from patch_openai.patch_openai import patch_openai
-from typing import List
-from models.models import Examples
+from typing import List, Optional
+from models.models import GrasshopperScriptModel
+
+
+class Example(BaseModel):
+    Description: str
+    GrasshopperScriptModel: GrasshopperScriptModel
+    Embedding: Optional[List[float]] = None
+
+
+class Examples(BaseModel):
+    Examples: List[Example]
+
 
 def load_examples() -> Examples:
     # file path needed to work with pytest

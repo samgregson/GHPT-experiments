@@ -19,6 +19,9 @@ from models.models import (
     Strategy,
     StrategyRating
 )
+from data.examples import (
+    GrasshopperScriptModel
+)
 from instructor.retry import InstructorRetryException
 
 

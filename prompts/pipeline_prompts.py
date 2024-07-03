@@ -2,8 +2,8 @@ import json
 import textwrap
 from typing import List
 from data.components import ValidComponent, load_components
-from models.models import Example, Strategy, find_valid_component_by_name
-from data.examples import load_examples, get_examples_with_embeddings
+from models.models import Strategy, find_valid_component_by_name
+from data.examples import Example, load_examples, get_examples_with_embeddings
 
 
 def format_script_examples(examples: list[str]) -> str:
@@ -25,7 +25,8 @@ def format_script_examples(examples: list[str]) -> str:
 
 
 examples = load_examples()
-examples = get_examples_with_embeddings()
+examples_embeddings = get_examples_with_embeddings()
+
 
 def format_strategy_examples(examples: list[str]) -> str:
     """

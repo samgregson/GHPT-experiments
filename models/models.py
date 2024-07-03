@@ -15,13 +15,8 @@ from data.components import (
     ValidComponent
 )
 
-from data.examples import (
-    get_examples_with_embeddings,
-    get_k_nearest_examples
-)
 
 valid_components = get_components_with_embeddings()
-valid_examples = get_examples_with_embeddings()
 
 
 class ComponentNames(BaseModel):
@@ -127,63 +122,6 @@ class Connection(BaseModel):
         description="The target component and parameter that the connection "
                     "is directing to"
     )
-
-
-class Strategy(BaseModel):
-    """
-    Detailed and concise Strategy for creating a grasshopper script. 
-    Make sure to include number sliders for inputs where relevant.
-    """
-    ChainOfThought: str = Field(
-        ...,
-        description="step by step rational explaining how the script will "
-        "acheive the aim, including the all components used."
-        "Be specific, avoid making vague statements."
-        "This strategy needs to give specific instructions that can easily"
-        "be carried out by a novice grasshopper user, without the need to"
-        "infer any details. Make sure to include number sliders for inputs where relevant."
-    )
-    Components: List[str] = Field(
-        ...,
-        description="A list of valid grasshopper components to be added"
-        "to the configuration"
-    )
-
-    @field_validator("Components")
-    @classmethod
-    def validate_components_exist(cls, v):
-        errors: List[InitErrorDetails] = []
-
-        for c in v:
-            name_list = [component.Name
-                         for component in valid_components.Components]
-            if c not in name_list \
-               and \
-               c not in ['Number Slider', 'Panel', 'Point']:
-                errors.append(InitErrorDetails(
-                    type=PydanticCustomError(
-                        "",
-                        textwrap.dedent(f"""
-                        The component '{c}' could not be found,
-                        either there is a typo or it does not exist.
-                        Did you mean any of these: {get_k_nearest_components(
-                            k=5,
-                            query=c,
-                            valid_components_with_embeddings=valid_components
-                        )}?
-                        Substitute the component for the actual
-                        component that you require only if they are equivalent!
-                        If no equivalent component is found consider redefining
-                        the strategy and 'ChainOfThought' from scratch!
-                        """)
-                    )
-                ))
-        if len(errors) > 0:
-            raise ValidationError.from_exception_data(
-                title='Components',
-                line_errors=errors,
-            )
-        return v
 
 
 class GrasshopperScriptModel(BaseModel):
@@ -300,13 +238,65 @@ class GrasshopperScriptModel(BaseModel):
         return script_component.Name
 
 
-class Example(BaseModel):
-    Description: str
-    GrasshopperScriptModel: GrasshopperScriptModel
+class Strategy(BaseModel):
+    """
+    Detailed and concise Strategy for creating a grasshopper script. 
+    Make sure to include number sliders for inputs where relevant.
+    """
+    ChainOfThought: str = Field(
+        ...,
+        description="step by step rational explaining how the script will "
+        "acheive the aim, including the all components used."
+        "Be specific, avoid making vague statements."
+        "This strategy needs to give specific instructions that can easily"
+        "be carried out by a novice grasshopper user, without the need to"
+        "infer any details. Make sure to include number sliders for inputs where relevant."
+    )
+    Components: List[str] = Field(
+        ...,
+        description="A list of valid grasshopper components to be added"
+        "to the configuration"
+    )
+
+    @field_validator("Components")
+    @classmethod
+    def validate_components_exist(cls, v):
+        errors: List[InitErrorDetails] = []
+
+        for c in v:
+            name_list = [component.Name
+                         for component in valid_components.Components]
+            if c not in name_list \
+               and \
+               c not in ['Number Slider', 'Panel', 'Point']:
+                errors.append(InitErrorDetails(
+                    type=PydanticCustomError(
+                        "",
+                        textwrap.dedent(f"""
+                        The component '{c}' could not be found,
+                        either there is a typo or it does not exist.
+                        Did you mean any of these: {get_k_nearest_components(
+                            k=5,
+                            query=c,
+                            valid_components_with_embeddings=valid_components
+                        )}?
+                        Substitute the component for the actual
+                        component that you require only if they are equivalent!
+                        If no equivalent component is found consider redefining
+                        the strategy and 'ChainOfThought' from scratch!
+                        """)
+                    )
+                ))
+        if len(errors) > 0:
+            raise ValidationError.from_exception_data(
+                title='Components',
+                line_errors=errors,
+            )
+        return v
 
 
-class Examples(BaseModel): 
-    Examples: List[Example]
+
+
 
 def find_valid_component_by_name(
     valid_components: ValidComponents,
