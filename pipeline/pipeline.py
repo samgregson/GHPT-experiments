@@ -1,5 +1,5 @@
 import textwrap
-from typing import Union
+from typing import List, Union
 from instructor import AsyncInstructor, Instructor
 import instructor
 from langsmith import traceable
@@ -21,11 +21,28 @@ from models.models import (
 )
 from data.examples import (
     Example,
+    Examples,
     GrasshopperScriptModel,
     get_examples_with_embeddings,
     get_k_nearest_examples
 )
 from instructor.retry import InstructorRetryException
+
+
+
+
+
+@traceable
+def pipe_get_examples(user_prompt: str) -> List[Example]:
+    input_embedding = get_k_nearest_examples(k=5, query=user_prompt, examples_with_embeddings=get_examples_with_embeddings())
+    #examples = input_embedding.Example
+    examples = input_embedding
+    return examples
+
+
+#examples = pipe_get_examples()
+
+
 
 
 @traceable
@@ -82,7 +99,11 @@ async def run_pipeline(
     Returns:
         [type]: The completion response.
     """
-    examples = pipe_get_examples()
+
+
+    examples = pipe_get_examples(user_prompt=user_prompt)
+
+
 
     problem_statement = await pipe_problem_statement(
         client=client,
@@ -92,7 +113,8 @@ async def run_pipeline(
     strategy: Strategy = await pipe_strategy(
         client=client,
         user_prompt=user_prompt,
-        problem_statement=problem_statement
+        problem_statement=problem_statement,
+        examples=examples
     )
 
     response = await call_openai_instructor(
@@ -101,12 +123,14 @@ async def run_pipeline(
             user_prompt=user_prompt,
             strategy=strategy
         ),
-        system_prompt=get_follow_up_system_template()
+        system_prompt=get_follow_up_system_template(examples)
     )
 
     return response
     # return strategy
 
+
+#Pass dynamic examples list into pipe_strategy method *** 
 
 @traceable
 async def pipe_problem_statement(
@@ -136,7 +160,8 @@ async def pipe_problem_statement(
 async def pipe_strategy(
     client: Union[AsyncInstructor, Instructor],  # Union[OpenAI, AsyncOpenAI],
     user_prompt: str,
-    problem_statement: ProblemStatement
+    problem_statement: ProblemStatement,
+    examples: List[Example]
 ) -> Strategy:
     """
     Generates a strategy based on the given user prompt.
@@ -159,7 +184,7 @@ async def pipe_strategy(
         DESCRIPTION=user_prompt,
         PROBLEM_STATEMENT=problem_statement.model_dump_json()
     )
-    system_prompt: str = get_strategy_system_template()
+    system_prompt: str = get_strategy_system_template(examples)
     model: str = "gpt-3.5-turbo-1106"
     gpt4_turbo: str = "gpt-4-turbo"
     temperature: float = 0
@@ -238,8 +263,3 @@ async def pipe_strategy(
 
 
 
-@traceable
-def pipe_get_examples() -> Example:
-    input_embedding = get_k_nearest_examples(k=5, query=input, valid_examples_with_embeddings=get_examples_with_embeddings())
-    examples = input_embedding.Example
-    return examples

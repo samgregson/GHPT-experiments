@@ -73,7 +73,7 @@ def get_grasshopper_script_model_system_template(examples:Examples) -> str:
 
     ===
 
-    """.format(EXAMPLES=format_script_examples([e.model_dump_json() for e in examples.Examples]))
+    """.format(EXAMPLES=format_script_examples([e.model_dump_json() for e in examples]))
 
     return grasshopper_script_model_system_template
 
@@ -120,7 +120,8 @@ def get_strategy_system_template(examples:Examples) -> str:
     {EXAMPLES}
     </examples>
     """.format(EXAMPLES=format_strategy_examples(
-        [e.model_dump_json() for e in examples.Examples]
+        [e.model_dump_json() for e in examples]
+        #[e.model_dump_json() for e in examples.Examples]
     ))
 
     return strategy_system_template
@@ -148,7 +149,8 @@ def get_strategy_system_template(examples:Examples) -> str:
     {EXAMPLES}
     </examples>
     """.format(EXAMPLES=format_strategy_examples(
-        [e.model_dump_json() for e in examples.Examples]
+        [e.model_dump_json() for e in examples]
+        #[e.model_dump_json() for e in examples.Examples]
     ))
 
     return strategy_system_template
@@ -168,7 +170,8 @@ def get_follow_up_system_template(examples:Examples) -> str:
     {EXAMPLES}
     </examples>
     """.format(EXAMPLES=format_script_examples(
-        [e.model_dump_json() for e in examples.Examples]
+        [e.model_dump_json() for e in examples]
+        #[e.model_dump_json() for e in examples.Examples]
     ))
 
     return follow_up_system_template

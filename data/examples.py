@@ -67,8 +67,8 @@ def get_examples_with_embeddings() -> Examples:
 def get_k_nearest_examples(
     k: int,
     query: str,
-    valid_examples_with_embeddings: Examples
-):
+    examples_with_embeddings: Examples
+) -> List[Example]:
     """
     Uses OpenAI Embeddings API to get the k closest matches to an input string
     """
@@ -91,7 +91,7 @@ def get_k_nearest_examples(
         return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
     similarity_scores = []
-    for example in valid_examples_with_embeddings.Examples:
+    for example in examples_with_embeddings.Examples:
         embedding = example.Embedding
         similarity_score: float = cosine_similarity(query_embedding, embedding)
         similarity_scores.append((example, similarity_score))
@@ -103,7 +103,7 @@ def get_k_nearest_examples(
     top_k_matches = similarity_scores[:k]
 
     # Get component names and descriptions for top k matches
-    matched_examples: List[Examples] = [
+    matched_examples: List[Example] = [
         e for e, _ in top_k_matches
     ]
     return matched_examples
