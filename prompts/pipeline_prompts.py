@@ -24,9 +24,6 @@ def format_script_examples(examples: list[str]) -> str:
 
 
 
-#examples = load_examples()
-#examples_embeddings = get_examples_with_embeddings()
-
 
 def format_strategy_examples(examples: list[str]) -> str:
     """
@@ -52,7 +49,6 @@ def format_strategy_examples(examples: list[str]) -> str:
     return formatted_examples
 
 
-#This one is not used??
 def get_grasshopper_script_model_system_template(examples:Examples) -> str:
     grasshopper_script_model_system_template = """
     You are a Grasshopper3d Expert and are going to help create a Grasshopper
@@ -77,8 +73,7 @@ def get_grasshopper_script_model_system_template(examples:Examples) -> str:
 
     return grasshopper_script_model_system_template
 
-# REPLACE THIS BIT WITH SEMANTIC EXAMPLE SEARCH ^
-# Or instead, only return examples (from examples.py) that are the top 3 semantic matches?
+
 
 description_template = """
 # Description
@@ -121,7 +116,6 @@ def get_strategy_system_template(examples:Examples) -> str:
     </examples>
     """.format(EXAMPLES=format_strategy_examples(
         [e.model_dump_json() for e in examples]
-        #[e.model_dump_json() for e in examples.Examples]
     ))
 
     return strategy_system_template
@@ -150,7 +144,6 @@ def get_strategy_system_template(examples:Examples) -> str:
     </examples>
     """.format(EXAMPLES=format_strategy_examples(
         [e.model_dump_json() for e in examples]
-        #[e.model_dump_json() for e in examples.Examples]
     ))
 
     return strategy_system_template
@@ -171,20 +164,12 @@ def get_follow_up_system_template(examples:Examples) -> str:
     </examples>
     """.format(EXAMPLES=format_script_examples(
         [e.model_dump_json() for e in examples]
-        #[e.model_dump_json() for e in examples.Examples]
     ))
 
     return follow_up_system_template
 
 
-
-
-
 valid_components = load_components()
-
-
-
-
 
 
 def get_description_strategy_template(user_prompt: str, strategy: Strategy):

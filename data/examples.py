@@ -35,7 +35,7 @@ def get_examples_with_embeddings() -> Examples:
         # load from example_embeddings.json if file exists
         with open(example_embeddings_json_path, 'r') as f:
             examples_json = json.load(f)
-        return Examples.model_validate(examples_json) #this probably doesnt make sense
+        return Examples.model_validate(examples_json) 
     else:
         # Generate embeddings for all example names
         examples = load_examples()
@@ -106,6 +106,10 @@ def get_k_nearest_examples(
     matched_examples: List[Example] = [
         e for e, _ in top_k_matches
     ]
+
+    for e in matched_examples:
+        e.Embedding = None
+
     return matched_examples
 
 

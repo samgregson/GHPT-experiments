@@ -21,7 +21,6 @@ from models.models import (
 )
 from data.examples import (
     Example,
-    Examples,
     GrasshopperScriptModel,
     get_examples_with_embeddings,
     get_k_nearest_examples
@@ -29,25 +28,16 @@ from data.examples import (
 from instructor.retry import InstructorRetryException
 
 
-
-
-
-@traceable
+@traceable(run_type="retriever")
 def pipe_get_examples(user_prompt: str) -> List[Example]:
     input_embedding = get_k_nearest_examples(k=5, query=user_prompt, examples_with_embeddings=get_examples_with_embeddings())
-    #examples = input_embedding.Example
     examples = input_embedding
     return examples
 
 
-#examples = pipe_get_examples()
-
-
-
-
 @traceable
 async def call_openai_instructor(
-    client: Union[AsyncInstructor, Instructor],  # Union[OpenAI, AsyncOpenAI],
+    client: Union[AsyncInstructor, Instructor], 
     prompt: str,
     system_prompt: str = "",
     model: str = "gpt-3.5-turbo-1106",
@@ -87,7 +77,7 @@ async def call_openai_instructor(
 
 @traceable
 async def run_pipeline(
-    client: Union[AsyncInstructor, Instructor],  # Union[OpenAI, AsyncOpenAI],
+    client: Union[AsyncInstructor, Instructor], 
     user_prompt: str
 ):
     """Runs the LLM program pipeline.
@@ -127,14 +117,11 @@ async def run_pipeline(
     )
 
     return response
-    # return strategy
 
-
-#Pass dynamic examples list into pipe_strategy method *** 
 
 @traceable
 async def pipe_problem_statement(
-    client: Union[AsyncInstructor, Instructor],  # Union[OpenAI, AsyncOpenAI],
+    client: Union[AsyncInstructor, Instructor],  
     user_prompt: str,
 ) -> ProblemStatement:
     prompt = description_template.format(DESCRIPTION=user_prompt)
@@ -158,7 +145,7 @@ async def pipe_problem_statement(
 
 @traceable
 async def pipe_strategy(
-    client: Union[AsyncInstructor, Instructor],  # Union[OpenAI, AsyncOpenAI],
+    client: Union[AsyncInstructor, Instructor],  
     user_prompt: str,
     problem_statement: ProblemStatement,
     examples: List[Example]
@@ -218,7 +205,6 @@ async def pipe_strategy(
                 completion.choices[0].message.tool_calls[0].function.arguments
         else:
             response_json = completion.choices[0].message.content
-        # response = response_model.model_validate_json(response_json)
 
         # replace 'tool' roles with assistant and user
         messages[-2] = {"role": "assistant", "content": response_json}
@@ -247,7 +233,6 @@ async def pipe_strategy(
     if rating_response.score < 5 or error is True:
         messages.append({
             "role": "user", "content": rating_response.validation_errors +
-            # ", ".join(rating_response.susbstitution_recommendations)
             rating_response.model_dump_json()
         })
         response: ChatCompletion = await client.chat.completions.create(
@@ -259,7 +244,3 @@ async def pipe_strategy(
         )
 
     return response
-
-
-
-
