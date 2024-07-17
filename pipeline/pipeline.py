@@ -30,7 +30,7 @@ from instructor.retry import InstructorRetryException
 @traceable(run_type="retriever")
 def pipe_get_examples(user_prompt: str) -> List[Example]:
     input_embedding = get_k_nearest_examples(
-        k=5,
+        k=3,
         query=user_prompt,
         examples_with_embeddings=get_examples_with_embeddings()
     )
