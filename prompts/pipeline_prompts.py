@@ -3,7 +3,7 @@ import textwrap
 from typing import List
 from data.components import ValidComponent, load_components
 from models.models import Strategy, find_valid_component_by_name
-from data.examples import Example, Examples, load_examples, get_examples_with_embeddings
+from data.examples import Example, Examples
 
 
 def format_script_examples(examples: list[str]) -> str:
@@ -21,8 +21,6 @@ def format_script_examples(examples: list[str]) -> str:
         scriptModel: {scriptModel.model_dump_json()}
         """ + "\n\n"
     return formatted_examples
-
-
 
 
 def format_strategy_examples(examples: list[str]) -> str:
@@ -45,8 +43,8 @@ def format_strategy_examples(examples: list[str]) -> str:
     return formatted_examples
 
 
-def get_grasshopper_script_model_system_template(examples:Examples) -> str:
-    grasshopper_script_model_system_template = """
+def get_grasshopper_script_model_system_template(examples: Examples) -> str:
+    grasshopper_script_model_system_template = textwrap.dedent("""
     You are a Grasshopper3d Expert and are going to help create a Grasshopper
     definition.
     You will be given a description of the script to create.
@@ -65,32 +63,34 @@ def get_grasshopper_script_model_system_template(examples:Examples) -> str:
 
     ===
 
-    """.format(EXAMPLES=format_script_examples([e.model_dump_json() for e in examples]))
+    """).format(EXAMPLES=format_script_examples(
+        [e.model_dump_json() for e in examples]
+    ))
 
     return grasshopper_script_model_system_template
 
 
-
-description_template = """
+description_template = textwrap.dedent("""
 # Description
 {DESCRIPTION}
-"""
+""")
 
-strategy_prompt_template = """
+strategy_prompt_template = textwrap.dedent("""
 # Description
 {DESCRIPTION}
 
 # Problem Statement
 {PROBLEM_STATEMENT}
-"""
+""")
 
-problem_statement_system_template = """
+problem_statement_system_template = textwrap.dedent("""
 You are a Grasshopper3d Expert and are going to help create a Grasshopper
 definition.
-"""
+""")
 
-def get_strategy_system_template(examples:Examples) -> str:
-    strategy_system_template = """
+
+def get_strategy_system_template(examples: Examples) -> str:
+    strategy_system_template = textwrap.dedent("""
     You are a Grasshopper3d Expert and are going to help create a Grasshopper
     definition
     You will be given a description of the script to create, required input and
@@ -104,20 +104,20 @@ def get_strategy_system_template(examples:Examples) -> str:
     approach the grasshopper script.
     - Next provide a list of the essential components required to execute the
     strategy.
- 
+
 
     <examples>
     {EXAMPLES}
     </examples>
-    """.format(EXAMPLES=format_strategy_examples(
+    """).format(EXAMPLES=format_strategy_examples(
         [e.model_dump_json() for e in examples]
     ))
 
     return strategy_system_template
  
 
-def get_follow_up_system_template(examples:Examples) -> str:
-    follow_up_system_template = """
+def get_follow_up_system_template(examples: Examples) -> str:
+    follow_up_system_template = textwrap.dedent("""
     You are a Grasshopper3d Expert and are going to help create a Grasshopper
     definition.
     You will be given the following:
@@ -128,7 +128,7 @@ def get_follow_up_system_template(examples:Examples) -> str:
     <examples>
     {EXAMPLES}
     </examples>
-    """.format(EXAMPLES=format_script_examples(
+    """).format(EXAMPLES=format_script_examples(
         [e.model_dump_json() for e in examples]
     ))
 
@@ -156,7 +156,7 @@ def get_description_strategy_template(user_prompt: str, strategy: Strategy):
     for c in components:
         components_str += c.model_dump_json()
 
-    return """
+    return textwrap.dedent("""
     # Description
     {DESCRIPTION}
     ===
@@ -165,7 +165,7 @@ def get_description_strategy_template(user_prompt: str, strategy: Strategy):
     ===
     # Components
     {COMPONENTS}
-    """.format(
+    """).format(
         DESCRIPTION=description,
         STRATEGY=strategy_str,
         COMPONENTS=components_str
