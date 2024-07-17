@@ -412,8 +412,9 @@ class StrategyRating(BaseModel):
     input_adherence: str = Field(
         ..., description=textwrap.dedent(
             """
-            in words, and with reference to 'inputs' in the 'Problem Description'
-            critically evaluate if all inputs have been included in the plan.
+            in words, and with reference to 'inputs' in the 'Problem
+            Description' critically evaluate if all inputs have been
+            included in the plan.
             e.g. as slider, point, or panel components
             """
         )
@@ -432,14 +433,6 @@ class StrategyRating(BaseModel):
             for each strategy step, in words, critically evaluate whether the
             single component can truthefully implement everything in the steps
             description.
-            """
-        )
-    )
-    other_advice: Optional[str] = Field(
-        ..., description=textwrap.dedent(
-            """
-            any other advice to address any issues mentioned in
-            reasoning
             """
         )
     )

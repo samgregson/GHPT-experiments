@@ -198,7 +198,11 @@ async def pipe_strategy(
         *messages[1:],
         {"role": "user", "content": textwrap.dedent(
             """
-            Does the above strategy look correct? Evaluate and then score
+            Does the above strategy look correct? Provide the following,
+            - input adherance
+            - substitution recommendations
+            - validity of each step
+            - overall score
             """
         )}
     ]
