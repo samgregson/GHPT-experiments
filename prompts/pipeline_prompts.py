@@ -39,12 +39,8 @@ def format_strategy_examples(examples: list[str]) -> str:
         # Description
         {description}
         # Strategy
-        {
-            Strategy(
-                ChainOfThought=script_model.ChainOfThought,
-                Components=[c.Name for c in script_model.Components]
-            ).model_dump_json()
-        }
+        {script_model.ChainOfThought}
+        {str([c.Name for c in script_model.Components])}
         """) + "\n\n"
     return formatted_examples
 
@@ -93,13 +89,12 @@ You are a Grasshopper3d Expert and are going to help create a Grasshopper
 definition.
 """
 
-#- You will be provided a problem statement. Include number sliders for the inputs where required.
 def get_strategy_system_template(examples:Examples) -> str:
     strategy_system_template = """
     You are a Grasshopper3d Expert and are going to help create a Grasshopper
-    definition.
+    definition
     You will be given a description of the script to create, required input and
-    output, and you may also be given some feedback and advice.
+    output, and you may also be given some feedback and advice
 
     Make sure you follow the expected inputs and outputs.
     If any advice is provided make sure you consider this carefully in defining
@@ -109,35 +104,7 @@ def get_strategy_system_template(examples:Examples) -> str:
     approach the grasshopper script.
     - Next provide a list of the essential components required to execute the
     strategy.
-    
-
-    <examples>
-    {EXAMPLES}
-    </examples>
-    """.format(EXAMPLES=format_strategy_examples(
-        [e.model_dump_json() for e in examples]
-    ))
-
-    return strategy_system_template
-
-
-
-def get_strategy_system_template(examples:Examples) -> str:
-    strategy_system_template = """
-    You are a Grasshopper3d Expert and are going to help create a Grasshopper
-    definition.
-    You will be given a description of the script to create, required input and
-    output, and you may also be given some feedback and advice.
-
-    Make sure you follow the expected inputs and outputs.
-    If any advice is provided make sure you consider this carefully in defining
-    your strategy.
-
-    - First, you must provide a concise and well defined strategy for how to
-    approach the grasshopper script.
-    - Next provide a list of the essential components required to execute the
-    strategy.
-    
+ 
 
     <examples>
     {EXAMPLES}
@@ -148,7 +115,6 @@ def get_strategy_system_template(examples:Examples) -> str:
 
     return strategy_system_template
  
-
 
 def get_follow_up_system_template(examples:Examples) -> str:
     follow_up_system_template = """
@@ -182,10 +148,10 @@ def get_description_strategy_template(user_prompt: str, strategy: Strategy):
     components: List[ValidComponent] = \
         [find_valid_component_by_name(
             valid_components=valid_components,
-            name=c,
+            name=c.ComponentName,
             errors=[]
         )
-        for c in strategy.Components]
+        for c in strategy.ChainOfThought]
     components_str = ''
     for c in components:
         components_str += c.model_dump_json()

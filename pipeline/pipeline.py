@@ -173,7 +173,7 @@ async def pipe_strategy(
     )
     system_prompt: str = get_strategy_system_template(examples)
     model: str = "gpt-3.5-turbo-1106"
-    gpt4_turbo: str = "gpt-4-turbo"
+    gpt4o: str = "gpt-4o"
     temperature: float = 0
     response_model: BaseModel = Strategy
     messages = [
@@ -187,7 +187,7 @@ async def pipe_strategy(
     try:
         # generate initial strategy
         response: Strategy = await client.chat.completions.create(
-            model=gpt4_turbo,
+            model=model,
             messages=messages,
             temperature=temperature,
             response_model=response_model,
@@ -217,7 +217,11 @@ async def pipe_strategy(
         *messages[1:],
         {"role": "user", "content": textwrap.dedent(
             """
-            Does the above strategy look correct? Evaluate and then score
+            Does the above strategy look correct? Provide the following,
+            - input adherance
+            - substitution recommendations
+            - validity of each step
+            - overall score
             """
         )}
     ]
@@ -232,8 +236,8 @@ async def pipe_strategy(
     # create a new strategy based on feedback
     if rating_response.score < 5 or error is True:
         messages.append({
-            "role": "user", "content": rating_response.validation_errors +
-            rating_response.model_dump_json()
+            "role": "user",
+            "content": rating_response.model_dump_json()
         })
         response: ChatCompletion = await client.chat.completions.create(
             model=model,

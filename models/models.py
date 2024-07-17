@@ -58,10 +58,22 @@ class NumberSlider(AbstractComponentWithId):
     Name: Literal["Number Slider"]
     Value: str = Field(
         "0..2..4",
-        alias='Value',
-        description="The range of values for the Number Slider. "
-                    "In the format '<start>..<default>..<end>'. "
-                    "Give a decent range of values to allow for flexibility"
+        description=textwrap.dedent(
+            """
+            The range of values for the Number Slider
+            In the format '<start>..<default>..<end>'
+            Give a decent range of values to allow for flexibility
+            If a specific value is required, set the default to that value
+            e.g. if the value should be 5, set the value to '0..5..10'
+            """),
+    )
+    NickName: Optional[str] = Field(
+        ...,
+        description=textwrap.dedent(
+            """A nickname for the Number Slider, if any, describing what the
+            'Number Slider' represents, e.g. 'height', 'x-spacing', 'radius'
+            etc.
+            """)
     )
 
 
@@ -124,6 +136,68 @@ class Connection(BaseModel):
     )
 
 
+class StrategyStep(BaseModel):
+    ComponentName: str
+    StepDescription: str
+
+
+class Strategy(BaseModel):
+    """
+    Detailed and concise Strategy for creating a grasshopper script. 
+    Make sure to include number sliders for inputs where relevant.
+    """
+    ChainOfThought: List[StrategyStep] = Field(
+        ...,
+        description=textwrap.dedent(
+            """
+            step by step plan explaining how the script will
+            acheive the aim, including the all components used.
+            Start by defining all inputs, e.g. sliders, points, or panels
+            Be specific, avoid making vague statements.
+            This strategy needs to give specific instructions that can easily
+            be carried out by a novice grasshopper user, without the need to
+            infer any details
+            """
+        )
+    )
+
+    @field_validator("ChainOfThought")
+    @classmethod
+    def validate_components_exist(cls, v):
+        errors: List[InitErrorDetails] = []
+        c: StrategyStep
+        for c in v:
+            name_list = [component.Name
+                         for component in valid_components.Components]
+            if c.ComponentName not in name_list \
+               and \
+               c.ComponentName not in ['Number Slider', 'Panel', 'Point']:
+                errors.append(InitErrorDetails(
+                    type=PydanticCustomError(
+                        "",
+                        textwrap.dedent(f"""
+                        The component '{c.ComponentName}' could not be found,
+                        either there is a typo or it does not exist.
+                        Did you mean any of these: {get_k_nearest_components(
+                            k=5,
+                            query=f'${c.ComponentName}: ${c.StepDescription}',
+                            valid_components_with_embeddings=valid_components
+                        )}?
+                        Substitute the component for the actual
+                        component that you require only if they are equivalent!
+                        If no equivalent component is found consider redefining
+                        the strategy and 'ChainOfThought' from scratch!
+                        """)
+                    )
+                ))
+        if len(errors) > 0:
+            raise ValidationError.from_exception_data(
+                title='Components',
+                line_errors=errors,
+            )
+        return v
+
+
 class GrasshopperScriptModel(BaseModel):
     """
     A acyclic directed graph representation of a grasshopper script with all
@@ -149,6 +223,31 @@ class GrasshopperScriptModel(BaseModel):
         description="A piece of advice or instruction related to using the "
                     "grasshopper script"
     )
+
+    @model_validator(mode='after')
+    def check_circular_ref(self):
+        """
+        Checks if there are any circular references in the connections
+        """
+        errors: List[InitErrorDetails] = []
+        for connection in self.Connections:
+            from_id = connection.From.Id
+            to_id = connection.To.Id
+            if from_id == to_id:
+                errors.append(InitErrorDetails(
+                    type=PydanticCustomError(
+                        "",
+                        f"Connection from component {from_id} to component "
+                        f"{to_id} is a circular reference. Please remove the "
+                        f"connection."
+                    )
+                ))
+        if len(errors) > 0:
+            raise ValidationError.from_exception_data(
+                title=self.__class__.__name__,
+                line_errors=errors,
+            )
+        return self
 
     @model_validator(mode='after')
     def validate_parameter_names(self):
@@ -238,66 +337,6 @@ class GrasshopperScriptModel(BaseModel):
         return script_component.Name
 
 
-class Strategy(BaseModel):
-    """
-    Detailed and concise Strategy for creating a grasshopper script. 
-    Make sure to include number sliders for inputs where relevant.
-    """
-    ChainOfThought: str = Field(
-        ...,
-        description="step by step rational explaining how the script will "
-        "acheive the aim, including the all components used."
-        "Be specific, avoid making vague statements."
-        "This strategy needs to give specific instructions that can easily"
-        "be carried out by a novice grasshopper user, without the need to"
-        "infer any details. Make sure to include number sliders for inputs where relevant."
-    )
-    Components: List[str] = Field(
-        ...,
-        description="A list of valid grasshopper components to be added"
-        "to the configuration"
-    )
-
-    @field_validator("Components")
-    @classmethod
-    def validate_components_exist(cls, v):
-        errors: List[InitErrorDetails] = []
-
-        for c in v:
-            name_list = [component.Name
-                         for component in valid_components.Components]
-            if c not in name_list \
-               and \
-               c not in ['Number Slider', 'Panel', 'Point']:
-                errors.append(InitErrorDetails(
-                    type=PydanticCustomError(
-                        "",
-                        textwrap.dedent(f"""
-                        The component '{c}' could not be found,
-                        either there is a typo or it does not exist.
-                        Did you mean any of these: {get_k_nearest_components(
-                            k=5,
-                            query=c,
-                            valid_components_with_embeddings=valid_components
-                        )}?
-                        Substitute the component for the actual
-                        component that you require only if they are equivalent!
-                        If no equivalent component is found consider redefining
-                        the strategy and 'ChainOfThought' from scratch!
-                        """)
-                    )
-                ))
-        if len(errors) > 0:
-            raise ValidationError.from_exception_data(
-                title='Components',
-                line_errors=errors,
-            )
-        return v
-
-
-
-
-
 def find_valid_component_by_name(
     valid_components: ValidComponents,
     name: str,
@@ -359,46 +398,33 @@ def find_valid_parameter_by_name(
 
 
 class StrategyRating(BaseModel):
-    problem_statement_adherance: str = Field(
+    """
+    A critical and honest evaluation of the strategy.
+    """
+    input_adherence: str = Field(
         ..., description=textwrap.dedent(
             """
-            in words, critically describe how well the script addresses the
-            expected inputs and outputs, and assumptions, as outlined in the problem
-            statement.
-            """
-        )
-    )
-    detail: str = Field(
-        ..., description=textwrap.dedent(
-            """
-            in words, critically describe whether the strategy provides enough detail
-            in each step of the plan to achieve the goals
-            to be easily implemented by a novice user.
-            """
-        )
-    )
-    validation_errors: str = Field(
-        ..., description=textwrap.dedent(
-            """
-            In words critically consider very carefully any component validation errors
-            and whether any substitutions would faithfully represent the
-            original strategy. Explain each one in turn.
+            in words, and with reference to 'inputs' in the 'Problem
+            Description' critically evaluate if all inputs have been
+            included in the plan.
+            e.g. as slider, point, or panel components
             """
         )
     )
     susbstitution_recommendations: Optional[List[str]] = Field(
         ..., description=textwrap.dedent(
             """
-            The recommended substitutions for the components.
-            One for each error
+            For each validation error give one single recommended substitution
+            for the missing component, choose from the list of valid components
             """
         )
     )
-    other_advice: Optional[str] = Field(
+    steps_validity: List[str] = Field(
         ..., description=textwrap.dedent(
             """
-            any other advice to address any issues mentioned in
-            reasoning
+            for each strategy step, in words, critically evaluate whether the
+            single component can truthefully implement everything in the steps
+            description.
             """
         )
     )
@@ -411,9 +437,14 @@ class StrategyRating(BaseModel):
 
 
 class ProblemStatement(BaseModel):
-    inputs: List[Union[Panel,NumberSlider,Point]] = Field(
-        ...,
-        description="list of all inputs required for the script to function"
+    inputs: List[Union[Panel, NumberSlider, Point]] = Field(
+        ..., description=textwrap.dedent(
+            """
+            list of all inputs required for the script to function
+            e.g. Number Slider, Panel, Point components.
+            If a value is given in the script description ensure
+            that it is included in the 'Value' field of the component
+            """)
     )
     outputs: List[str] = Field(
         ...,
