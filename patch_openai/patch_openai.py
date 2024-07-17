@@ -49,7 +49,7 @@ def patch_openai(
 
     def call_chat(*args, **kwargs):
         body = {"kwargs": kwargs, "base_url": str(client.base_url)}
-        request_url = "https://fastapi-production-e161.up.railway.app/chat"
+        request_url = "https://fast-api-gules.vercel.app/chat"
 
         headers = {
             "api_key": api_key
@@ -84,7 +84,7 @@ def patch_openai(
 
     def call_embeddings(*args, **kwargs):
         body = {"kwargs": kwargs, "base_url": str(client.base_url)}
-        request_url = "https://fastapi-production-e161.up.railway.app/embeddings"
+        request_url = "https://fast-api-gules.vercel.app/embeddings"
 
         headers = {
             "api_key": api_key
