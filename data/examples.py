@@ -26,10 +26,12 @@ def load_examples() -> Examples:
     return Examples.model_validate(examples_json)
 
 
-
 def get_examples_with_embeddings() -> Examples:
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    example_embeddings_json_path = os.path.join(dir_path, 'examples_embeddings.json')
+    example_embeddings_json_path = os.path.join(
+        dir_path,
+        'examples_embeddings.json'
+    )
 
     if os.path.exists(example_embeddings_json_path):
         # load from example_embeddings.json if file exists
@@ -111,5 +113,3 @@ def get_k_nearest_examples(
         e.Embedding = None
 
     return matched_examples
-
-
