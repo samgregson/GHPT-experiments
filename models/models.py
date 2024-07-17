@@ -15,6 +15,7 @@ from data.components import (
     ValidComponent
 )
 
+
 valid_components = get_components_with_embeddings()
 
 
@@ -334,15 +335,6 @@ class GrasshopperScriptModel(BaseModel):
             ))
 
         return script_component.Name
-
-
-class Example(BaseModel):
-    Description: str
-    GrasshopperScriptModel: GrasshopperScriptModel
-
-
-class Examples(BaseModel): 
-    Examples: List[Example]
 
 
 def find_valid_component_by_name(

@@ -1,5 +1,5 @@
 import textwrap
-from typing import Union
+from typing import List, Union
 from instructor import AsyncInstructor, Instructor
 import instructor
 from langsmith import traceable
@@ -7,8 +7,8 @@ from pydantic import BaseModel
 from prompts.pipeline_prompts import (
     get_description_strategy_template,
     description_template,
-    follow_up_system_template,
-    strategy_system_template,
+    get_follow_up_system_template,
+    get_strategy_system_template,
     problem_statement_system_template,
     strategy_prompt_template
 )
@@ -19,12 +19,28 @@ from models.models import (
     Strategy,
     StrategyRating
 )
+from data.examples import (
+    Example,
+    get_examples_with_embeddings,
+    get_k_nearest_examples
+)
 from instructor.retry import InstructorRetryException
+
+
+@traceable(run_type="retriever")
+def pipe_get_examples(user_prompt: str) -> List[Example]:
+    input_embedding = get_k_nearest_examples(
+        k=5,
+        query=user_prompt,
+        examples_with_embeddings=get_examples_with_embeddings()
+    )
+    examples = input_embedding
+    return examples
 
 
 @traceable
 async def call_openai_instructor(
-    client: Union[AsyncInstructor, Instructor],  # Union[OpenAI, AsyncOpenAI],
+    client: Union[AsyncInstructor, Instructor], 
     prompt: str,
     system_prompt: str = "",
     model: str = "gpt-3.5-turbo-1106",
@@ -64,7 +80,7 @@ async def call_openai_instructor(
 
 @traceable
 async def run_pipeline(
-    client: Union[AsyncInstructor, Instructor],  # Union[OpenAI, AsyncOpenAI],
+    client: Union[AsyncInstructor, Instructor], 
     user_prompt: str
 ):
     """Runs the LLM program pipeline.
@@ -77,6 +93,11 @@ async def run_pipeline(
         [type]: The completion response.
     """
 
+
+    examples = pipe_get_examples(user_prompt=user_prompt)
+
+
+
     problem_statement = await pipe_problem_statement(
         client=client,
         user_prompt=user_prompt
@@ -85,7 +106,8 @@ async def run_pipeline(
     strategy: Strategy = await pipe_strategy(
         client=client,
         user_prompt=user_prompt,
-        problem_statement=problem_statement
+        problem_statement=problem_statement,
+        examples=examples
     )
 
     response = await call_openai_instructor(
@@ -94,16 +116,15 @@ async def run_pipeline(
             user_prompt=user_prompt,
             strategy=strategy
         ),
-        system_prompt=follow_up_system_template
+        system_prompt=get_follow_up_system_template(examples)
     )
 
     return response
-    # return strategy
 
 
 @traceable
 async def pipe_problem_statement(
-    client: Union[AsyncInstructor, Instructor],  # Union[OpenAI, AsyncOpenAI],
+    client: Union[AsyncInstructor, Instructor],  
     user_prompt: str,
 ) -> ProblemStatement:
     prompt = description_template.format(DESCRIPTION=user_prompt)
@@ -127,9 +148,10 @@ async def pipe_problem_statement(
 
 @traceable
 async def pipe_strategy(
-    client: Union[AsyncInstructor, Instructor],  # Union[OpenAI, AsyncOpenAI],
+    client: Union[AsyncInstructor, Instructor],  
     user_prompt: str,
-    problem_statement: ProblemStatement
+    problem_statement: ProblemStatement,
+    examples: List[Example]
 ) -> Strategy:
     """
     Generates a strategy based on the given user prompt.
@@ -152,7 +174,7 @@ async def pipe_strategy(
         DESCRIPTION=user_prompt,
         PROBLEM_STATEMENT=problem_statement.model_dump_json()
     )
-    system_prompt: str = strategy_system_template
+    system_prompt: str = get_strategy_system_template(examples)
     model: str = "gpt-3.5-turbo-1106"
     gpt4o: str = "gpt-4o"
     temperature: float = 0
