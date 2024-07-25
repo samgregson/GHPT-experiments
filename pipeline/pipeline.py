@@ -43,7 +43,7 @@ async def call_openai_instructor(
     client: Union[AsyncInstructor, Instructor], 
     prompt: str,
     system_prompt: str = "",
-    model: str = "gpt-3.5-turbo-1106",
+    model: str = "gpt-4o-mini",
     temperature: float = 0,
     response_model: BaseModel = GrasshopperScriptModel,
 ):
@@ -55,7 +55,7 @@ async def call_openai_instructor(
         system_prompt (str, optional): The system prompt.
             Defaults to "".
         model (str, optional): The model to use.
-            Defaults to "gpt-3.5-turbo-1106".
+            Defaults to "gpt-4o-mini".
         temperature (float, optional): The temperature for text generation.
             Defaults to 0.
         response_model ([type], optional): The response model.
@@ -129,7 +129,7 @@ async def pipe_problem_statement(
 ) -> ProblemStatement:
     prompt = description_template.format(DESCRIPTION=user_prompt)
     system_prompt: str = problem_statement_system_template
-    model: str = "gpt-3.5-turbo-1106"
+    model: str = "gpt-4o-mini"
     temperature: float = 0
     response_model: BaseModel = ProblemStatement
     messages = [
@@ -175,8 +175,7 @@ async def pipe_strategy(
         PROBLEM_STATEMENT=problem_statement.model_dump_json()
     )
     system_prompt: str = get_strategy_system_template(examples)
-    model: str = "gpt-3.5-turbo-1106"
-    gpt4o: str = "gpt-4o"
+    model: str = "gpt-4o-mini"
     temperature: float = 0
     response_model: BaseModel = Strategy
     messages = [
