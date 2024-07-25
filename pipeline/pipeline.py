@@ -176,7 +176,6 @@ async def pipe_strategy(
     )
     system_prompt: str = get_strategy_system_template(examples)
     model: str = "gpt-4o-mini"
-    gpt4o: str = "gpt-4o-mini"
     temperature: float = 0
     response_model: BaseModel = Strategy
     messages = [
