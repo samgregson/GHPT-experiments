@@ -31,7 +31,7 @@ from instructor.retry import InstructorRetryException
 @traceable(run_type="retriever")
 def pipe_get_examples(user_prompt: str) -> List[Example]:
     input_embedding = get_k_nearest_examples(
-        k=5,
+        k=3,
         query=user_prompt,
         examples_with_embeddings=get_examples_with_embeddings()
     )
@@ -117,7 +117,7 @@ async def pipe_gh_model(
 async def pipe_problem_statement(
     client: Union[AsyncInstructor, Instructor],
     user_prompt: str,
-    model: str = "gpt-3.5-turbo-1106"
+    model: str = "gpt-4o-mini"
 ) -> ProblemStatement:
     prompt = description_template.format(DESCRIPTION=user_prompt)
     system_prompt: str = problem_statement_system_template
@@ -167,6 +167,7 @@ async def pipe_strategy(
         PROBLEM_STATEMENT=problem_statement.model_dump_json()
     )
     system_prompt: str = get_strategy_system_template(examples)
+    model: str = "gpt-4o-mini"
     temperature: float = 0
     response_model: BaseModel = Strategy
     messages = [
