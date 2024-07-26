@@ -21,6 +21,7 @@ from models.models import (
 )
 from data.examples import (
     Example,
+    Examples,
     get_examples_with_embeddings,
     get_k_nearest_examples
 )
@@ -39,48 +40,8 @@ def pipe_get_examples(user_prompt: str) -> List[Example]:
 
 
 @traceable
-async def call_openai_instructor(
-    client: Union[AsyncInstructor, Instructor], 
-    prompt: str,
-    system_prompt: str = "",
-    model: str = "gpt-3.5-turbo-1106",
-    temperature: float = 0,
-    response_model: BaseModel = GrasshopperScriptModel,
-):
-    """Calls the OpenAI API to generate a Grasshopper script.
-
-    Args:
-        client (Union[OpenAI, AsyncOpenAI]): The OpenAI client.
-        prompt (str): The user prompt.
-        system_prompt (str, optional): The system prompt.
-            Defaults to "".
-        model (str, optional): The model to use.
-            Defaults to "gpt-3.5-turbo-1106".
-        temperature (float, optional): The temperature for text generation.
-            Defaults to 0.
-        response_model ([type], optional): The response model.
-            Defaults to GrasshopperScriptModel.
-
-    Returns:
-        [type]: The completion response.
-    """
-    completion = await client.chat.completions.create(
-        model=model,
-        temperature=temperature,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": prompt}
-        ],
-        response_model=response_model,
-        max_retries=0
-    )
-
-    return completion
-
-
-@traceable
 async def run_pipeline(
-    client: Union[AsyncInstructor, Instructor], 
+    client: Union[AsyncInstructor, Instructor],
     user_prompt: str
 ):
     """Runs the LLM program pipeline.
@@ -92,31 +53,61 @@ async def run_pipeline(
     Returns:
         [type]: The completion response.
     """
+    model = "gpt-4o-mini"
+    # gpt3_5: str = "gpt-3.5-turbo-1106"
+    # gpt4o: str = "gpt-4o"
 
-
-    examples = pipe_get_examples(user_prompt=user_prompt)
-
-
+    examples = pipe_get_examples(
+        user_prompt=user_prompt
+    )
 
     problem_statement = await pipe_problem_statement(
+        model=model,
         client=client,
         user_prompt=user_prompt
     )
 
     strategy: Strategy = await pipe_strategy(
+        model=model,
         client=client,
         user_prompt=user_prompt,
         problem_statement=problem_statement,
         examples=examples
     )
 
-    response = await call_openai_instructor(
-        client=client,
-        prompt=get_description_strategy_template(
-            user_prompt=user_prompt,
-            strategy=strategy
-        ),
-        system_prompt=get_follow_up_system_template(examples)
+    response = await pipe_gh_model(
+        client,
+        user_prompt,
+        examples,
+        strategy
+    )
+
+    return response
+
+
+@traceable
+async def pipe_gh_model(
+    client: Union[AsyncInstructor, Instructor],
+    user_prompt: str,
+    examples: Examples,
+    strategy: Strategy,
+    model: str = "gpt-3.5-turbo-1106",
+):
+    prompt = get_description_strategy_template(
+        user_prompt=user_prompt,
+        strategy=strategy
+    )
+    system_prompt = get_follow_up_system_template(examples)
+
+    response = await client.chat.completions.create(
+        model=model,
+        temperature=0,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": prompt}
+        ],
+        response_model=GrasshopperScriptModel,
+        max_retries=0
     )
 
     return response
@@ -124,12 +115,12 @@ async def run_pipeline(
 
 @traceable
 async def pipe_problem_statement(
-    client: Union[AsyncInstructor, Instructor],  
+    client: Union[AsyncInstructor, Instructor],
     user_prompt: str,
+    model: str = "gpt-3.5-turbo-1106"
 ) -> ProblemStatement:
     prompt = description_template.format(DESCRIPTION=user_prompt)
     system_prompt: str = problem_statement_system_template
-    model: str = "gpt-3.5-turbo-1106"
     temperature: float = 0
     response_model: BaseModel = ProblemStatement
     messages = [
@@ -151,7 +142,8 @@ async def pipe_strategy(
     client: Union[AsyncInstructor, Instructor],  
     user_prompt: str,
     problem_statement: ProblemStatement,
-    examples: List[Example]
+    examples: List[Example],
+    model: str = "gpt-4o-mini"
 ) -> Strategy:
     """
     Generates a strategy based on the given user prompt.
@@ -175,8 +167,6 @@ async def pipe_strategy(
         PROBLEM_STATEMENT=problem_statement.model_dump_json()
     )
     system_prompt: str = get_strategy_system_template(examples)
-    model: str = "gpt-3.5-turbo-1106"
-    gpt4o: str = "gpt-4o"
     temperature: float = 0
     response_model: BaseModel = Strategy
     messages = [
