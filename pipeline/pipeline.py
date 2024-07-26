@@ -121,6 +121,7 @@ async def pipe_problem_statement(
 ) -> ProblemStatement:
     prompt = description_template.format(DESCRIPTION=user_prompt)
     system_prompt: str = problem_statement_system_template
+    model: str = "gpt-4o-mini"
     temperature: float = 0
     response_model: BaseModel = ProblemStatement
     messages = [
