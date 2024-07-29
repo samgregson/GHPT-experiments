@@ -91,7 +91,7 @@ async def pipe_gh_model(
     user_prompt: str,
     examples: Examples,
     strategy: Strategy,
-    model: str = "gpt-3.5-turbo-1106",
+    model: str = "gpt-4o-mini",
 ):
     prompt = get_description_strategy_template(
         user_prompt=user_prompt,
