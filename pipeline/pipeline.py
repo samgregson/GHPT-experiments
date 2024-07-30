@@ -54,8 +54,6 @@ async def run_pipeline(
         [type]: The completion response.
     """
     model = "gpt-4o-mini"
-    # gpt3_5: str = "gpt-3.5-turbo-1106"
-    # gpt4o: str = "gpt-4o"
 
     examples = pipe_get_examples(
         user_prompt=user_prompt
