@@ -394,15 +394,288 @@ outputs = [
     """,
     # "Generate a 3D grid of 5x5x5 spheres with a spacing of 10 in the x, y, and z directions."
     """
+    {
+    "Components": [
+        {
+        "Id": 1,
+        "Name": "Series"
+        },
+        {
+        "Id": 2,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..5..10"
+        },
+        {
+        "Id": 3,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..10..10"
+        },
+        {
+        "Id": 4,
+        "Name": "Sphere"
+        },
+        {
+        "Id": 5,
+        "Name": "Move"
+        },
+        {
+        "Id": 6,
+        "Name": "Unit X"
+        },
+        {
+        "Id": 7,
+        "Name": "Unit Y"
+        },
+        {
+        "Id": 8,
+        "Name": "Unit Z"
+        },
+        {
+        "Id": 9,
+        "Name": "Move"
+        },
+        {
+        "Id": 10,
+        "Name": "Graft Tree"
+        },
+        {
+        "Id": 11,
+        "Name": "Move"
+        },
+        {
+        "Id": 12,
+        "Name": "Graft Tree"
+        }
+    ],
+    "Connections": [
+        {
+        "From": {
+            "Id": 3,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Step"
+        }
+        },
+        {
+        "From": {
+            "Id": 2,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Count"
+        }
+        },
+        {
+        "From": {
+            "Id": 4,
+            "ParameterName": "Sphere"
+        },
+        "To": {
+            "Id": 5,
+            "ParameterName": "Geometry"
+        }
+        },
+        {
+        "From": {
+            "Id": 6,
+            "ParameterName": "Unit vector"
+        },
+        "To": {
+            "Id": 5,
+            "ParameterName": "Motion"
+        }
+        },
+        {
+        "From": {
+            "Id": 1,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 6,
+            "ParameterName": "Factor"
+        }
+        },
+        {
+        "From": {
+            "Id": 1,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 7,
+            "ParameterName": "Factor"
+        }
+        },
+        {
+        "From": {
+            "Id": 1,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 8,
+            "ParameterName": "Factor"
+        }
+        },
+        {
+        "From": {
+            "Id": 10,
+            "ParameterName": "Tree"
+        },
+        "To": {
+            "Id": 9,
+            "ParameterName": "Geometry"
+        }
+        },
+        {
+        "From": {
+            "Id": 7,
+            "ParameterName": "Unit vector"
+        },
+        "To": {
+            "Id": 9,
+            "ParameterName": "Motion"
+        }
+        },
+        {
+        "From": {
+            "Id": 5,
+            "ParameterName": "Geometry"
+        },
+        "To": {
+            "Id": 10,
+            "ParameterName": "Tree"
+        }
+        },
+        {
+        "From": {
+            "Id": 12,
+            "ParameterName": "Tree"
+        },
+        "To": {
+            "Id": 11,
+            "ParameterName": "Geometry"
+        }
+        },
+        {
+        "From": {
+            "Id": 8,
+            "ParameterName": "Unit vector"
+        },
+        "To": {
+            "Id": 11,
+            "ParameterName": "Motion"
+        }
+        },
+        {
+        "From": {
+            "Id": 9,
+            "ParameterName": "Geometry"
+        },
+        "To": {
+            "Id": 12,
+            "ParameterName": "Tree"
+        }
+        }
+    ]
+    }
+
     """,
     # "Create a line from the origin to the point (10,10,10)."
     """
+    {
+    "Components": [
+        {
+        "Id": 1,
+        "Name": "Line"
+        },
+        {
+        "Id": 2,
+        "Name": "Point",
+        "Value": "{0,0,0}"
+        },
+        {
+        "Id": 3,
+        "Name": "Point",
+        "Value": "{10,10,10}"
+        }
+    ],
+    "Connections": [
+        {
+        "From": {
+            "Id": 2,
+            "ParameterName": "Point"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Start Point"
+        }
+        },
+        {
+        "From": {
+            "Id": 3,
+            "ParameterName": "Point"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "End Point"
+        }
+        }
+    ]
+    }
+
     """,
     # "Generate a series of 10 squares with side lengths increasing by 2 for each subsequent square."
     """
     """,
     # "Create a cone with a base radius of 5 and a height of 10."
     """
+    {
+    "Components": [
+        {
+        "Id": 1,
+        "Name": "Cone"
+        },
+        {
+        "Id": 2,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..5..10"
+        },
+        {
+        "Id": 3,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..10..10"
+        }
+    ],
+    "Connections": [
+        {
+        "From": {
+            "Id": 2,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Radius"
+        }
+        },
+        {
+        "From": {
+            "Id": 3,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Length"
+        }
+        }
+    ]
+    }
+
     """,
     # "Generate a torus with a tube radius of 2 and a path radius of 5."
     """
@@ -421,15 +694,260 @@ outputs = [
     """,
     # "Create a hexagonal grid of 5 by 5 points with a spacing of 10 in the x and y directions."
     """
+    {
+    "Components": [
+        {
+        "Id": 1,
+        "Name": "Hexagonal"
+        },
+        {
+        "Id": 2,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..5..10"
+        },
+        {
+        "Id": 3,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..10..10"
+        }
+    ],
+    "Connections": [
+        {
+        "From": {
+            "Id": 3,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Size"
+        }
+        },
+        {
+        "From": {
+            "Id": 2,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Extent X"
+        }
+        },
+        {
+        "From": {
+            "Id": 2,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Extent Y"
+        }
+        }
+    ]
+    }
+
     """,
     # "Generate a series of 10 hexagons with side lengths increasing by 1 for each subsequent hexagon."
     """
+    {
+    "Components": [
+        {
+        "Id": 1,
+        "Name": "Polygon"
+        },
+        {
+        "Id": 2,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..6..10"
+        },
+        {
+        "Id": 3,
+        "Name": "Series"
+        },
+        {
+        "Id": 4,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..10..10"
+        },
+        {
+        "Id": 5,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..0.5..1"
+        },
+        {
+        "Id": 6,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..0.5..1"
+        }
+    ],
+    "Connections": [
+        {
+        "From": {
+            "Id": 3,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Radius"
+        }
+        },
+        {
+        "From": {
+            "Id": 2,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Segments"
+        }
+        },
+        {
+        "From": {
+            "Id": 6,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 3,
+            "ParameterName": "Start"
+        }
+        },
+        {
+        "From": {
+            "Id": 5,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 3,
+            "ParameterName": "Step"
+        }
+        },
+        {
+        "From": {
+            "Id": 4,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 3,
+            "ParameterName": "Count"
+        }
+        }
+    ]
+    }
+
     """,
     # "Create a 3D grid of 5x5x5 cubes with a spacing of 10 in the x, y, and z directions. The size of the cubes should be determined by each cube's proximity to a random point on the grid such that at distance 0 the cube has dimensions 0 and at distance 1 the cube has dimensions 1."
     """
     """,
     # "Generate a series of 10 cylinders with radii increasing by 1 and heights increasing by 2 for each subsequent cylinder."
     """
+    {
+    "Components": [
+        {
+        "Id": 1,
+        "Name": "Cylinder"
+        },
+        {
+        "Id": 2,
+        "Name": "Series"
+        },
+        {
+        "Id": 3,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..10..10"
+        },
+        {
+        "Id": 4,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..1..1"
+        },
+        {
+        "Id": 5,
+        "Name": "Series"
+        },
+        {
+        "Id": 6,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..10..10"
+        },
+        {
+        "Id": 7,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..2..10"
+        }
+    ],
+    "Connections": [
+        {
+        "From": {
+            "Id": 2,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Radius"
+        }
+        },
+        {
+        "From": {
+            "Id": 5,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Length"
+        }
+        },
+        {
+        "From": {
+            "Id": 4,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 2,
+            "ParameterName": "Step"
+        }
+        },
+        {
+        "From": {
+            "Id": 3,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 2,
+            "ParameterName": "Count"
+        }
+        },
+        {
+        "From": {
+            "Id": 7,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 5,
+            "ParameterName": "Step"
+        }
+        },
+        {
+        "From": {
+            "Id": 6,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 5,
+            "ParameterName": "Count"
+        }
+        }
+    ]
+    }
+
     """,
     # "Create a series of 10 cones with base radii increasing by 1 and heights increasing by 2 for each subsequent cone."
     """
