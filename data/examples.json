@@ -49,6 +49,496 @@
         },
 
         {
+            "Description": "Create a series of 3 circles at a random elevation between 0 and 3, and a random radius between 0 and 1. Then loft these 3 circles to create a surface. Ensure to use different seed values for each Random component",
+            "GrasshopperScriptModel": {
+              "ChainOfThought": "",
+              "Advice": "",  
+              "Components": [
+                {
+                  "Id": 1,
+                  "Name": "Circle"
+                },
+                {
+                  "Id": 2,
+                  "Name": "Random"
+                },
+                {
+                  "Id": 3,
+                  "Name": "Number Slider",
+                  "NickName": "",
+                  "Value": "0..3..10"
+                },
+                {
+                  "Id": 4,
+                  "Name": "Move"
+                },
+                {
+                  "Id": 5,
+                  "Name": "Unit Z"
+                },
+                {
+                  "Id": 6,
+                  "Name": "Random"
+                },
+                {
+                  "Id": 7,
+                  "Name": "Number Slider",
+                  "NickName": "",
+                  "Value": "0..3..10"
+                },
+                {
+                  "Id": 8,
+                  "Name": "Loft"
+                },
+                {
+                  "Id": 9,
+                  "Name": "Number Slider",
+                  "NickName": "",
+                  "Value": "0..1..1"
+                },
+                {
+                  "Id": 10,
+                  "Name": "Number Slider",
+                  "NickName": "",
+                  "Value": "0..2..10"
+                }
+              ],
+              "Connections": [
+                {
+                  "From": {
+                    "Id": 2,
+                    "ParameterName": "Random"
+                  },
+                  "To": {
+                    "Id": 1,
+                    "ParameterName": "Radius"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 3,
+                    "ParameterName": "Value"
+                  },
+                  "To": {
+                    "Id": 2,
+                    "ParameterName": "Number"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 9,
+                    "ParameterName": "Value"
+                  },
+                  "To": {
+                    "Id": 2,
+                    "ParameterName": "Seed"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 1,
+                    "ParameterName": "Circle"
+                  },
+                  "To": {
+                    "Id": 4,
+                    "ParameterName": "Geometry"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 5,
+                    "ParameterName": "Unit vector"
+                  },
+                  "To": {
+                    "Id": 4,
+                    "ParameterName": "Motion"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 6,
+                    "ParameterName": "Random"
+                  },
+                  "To": {
+                    "Id": 5,
+                    "ParameterName": "Factor"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 7,
+                    "ParameterName": "Value"
+                  },
+                  "To": {
+                    "Id": 6,
+                    "ParameterName": "Range"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 3,
+                    "ParameterName": "Value"
+                  },
+                  "To": {
+                    "Id": 6,
+                    "ParameterName": "Number"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 10,
+                    "ParameterName": "Value"
+                  },
+                  "To": {
+                    "Id": 6,
+                    "ParameterName": "Seed"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 4,
+                    "ParameterName": "Geometry"
+                  },
+                  "To": {
+                    "Id": 8,
+                    "ParameterName": "Curves"
+                  }
+                }
+              ]
+            }
+        },
+        
+        {
+            "Description": "Create a 4x2 2D grid of lines with variable length between 0 and 1",
+            "GrasshopperScriptModel": {
+                "ChainOfThought": "",
+                "Advice": "",  
+                "Components": [
+                {
+                  "Id": 1,
+                  "Name": "Rectangular"
+                },
+                {
+                  "Id": 2,
+                  "Name": "Number Slider",
+                  "NickName": "",
+                  "Value": "0..2..10"
+                },
+                {
+                  "Id": 3,
+                  "Name": "Number Slider",
+                  "NickName": "",
+                  "Value": "0..4..10"
+                },
+                {
+                  "Id": 4,
+                  "Name": "Line SDL"
+                },
+                {
+                  "Id": 5,
+                  "Name": "Unit Z"
+                },
+                {
+                  "Id": 6,
+                  "Name": "Random"
+                },
+                {
+                  "Id": 7,
+                  "Name": "List Length"
+                },
+                {
+                  "Id": 8,
+                  "Name": "Flatten Tree"
+                },
+                {
+                  "Id": 9,
+                  "Name": "Flatten Tree"
+                }
+              ],
+              "Connections": [
+                {
+                  "From": {
+                    "Id": 2,
+                    "ParameterName": "Value"
+                  },
+                  "To": {
+                    "Id": 1,
+                    "ParameterName": "Size X"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 3,
+                    "ParameterName": "Value"
+                  },
+                  "To": {
+                    "Id": 1,
+                    "ParameterName": "Size Y"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 9,
+                    "ParameterName": "Tree"
+                  },
+                  "To": {
+                    "Id": 4,
+                    "ParameterName": "Start"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 5,
+                    "ParameterName": "Unit vector"
+                  },
+                  "To": {
+                    "Id": 4,
+                    "ParameterName": "Direction"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 5,
+                    "ParameterName": "Unit vector"
+                  },
+                  "To": {
+                    "Id": 4,
+                    "ParameterName": "Length"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 6,
+                    "ParameterName": "Random"
+                  },
+                  "To": {
+                    "Id": 5,
+                    "ParameterName": "Factor"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 7,
+                    "ParameterName": "Length"
+                  },
+                  "To": {
+                    "Id": 6,
+                    "ParameterName": "Number"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 8,
+                    "ParameterName": "Tree"
+                  },
+                  "To": {
+                    "Id": 7,
+                    "ParameterName": "List"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 1,
+                    "ParameterName": "Points"
+                  },
+                  "To": {
+                    "Id": 8,
+                    "ParameterName": "Tree"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 1,
+                    "ParameterName": "Points"
+                  },
+                  "To": {
+                    "Id": 9,
+                    "ParameterName": "Tree"
+                  }
+                }
+              ]
+            }
+        },
+          
+
+        {
+            "Description": "Generate a 3D grid of circles with radius 1 and grid dimensions of 2x4x7 in x y and z",
+            "GrasshopperScriptModel": {
+                "ChainOfThought": "",
+                "Advice": "",  
+                "Components": [
+                {
+                  "Id": 1,
+                  "Name": "Rectangular"
+                },
+                {
+                  "Id": 2,
+                  "Name": "Number Slider",
+                  "NickName": "",
+                  "Value": "0..2..10"
+                },
+                {
+                  "Id": 3,
+                  "Name": "Number Slider",
+                  "NickName": "",
+                  "Value": "0..4..10"
+                },
+                {
+                  "Id": 4,
+                  "Name": "Move"
+                },
+                {
+                  "Id": 5,
+                  "Name": "Unit Z"
+                },
+                {
+                  "Id": 6,
+                  "Name": "Number Slider",
+                  "NickName": "",
+                  "Value": "0..7..10"
+                },
+                {
+                  "Id": 7,
+                  "Name": "Series"
+                },
+                {
+                  "Id": 8,
+                  "Name": "Graft Tree"
+                },
+                {
+                  "Id": 9,
+                  "Name": "Simplify Tree"
+                },
+                {
+                  "Id": 10,
+                  "Name": "Flatten Tree"
+                },
+                {
+                  "Id": 11,
+                  "Name": "Simplify Tree"
+                },
+                {
+                  "Id": 12,
+                  "Name": "Circle"
+                }
+              ],
+              "Connections": [
+                {
+                  "From": {
+                    "Id": 2,
+                    "ParameterName": "Value"
+                  },
+                  "To": {
+                    "Id": 1,
+                    "ParameterName": "Size X"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 3,
+                    "ParameterName": "Value"
+                  },
+                  "To": {
+                    "Id": 1,
+                    "ParameterName": "Size Y"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 9,
+                    "ParameterName": "Tree"
+                  },
+                  "To": {
+                    "Id": 4,
+                    "ParameterName": "Geometry"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 5,
+                    "ParameterName": "Unit vector"
+                  },
+                  "To": {
+                    "Id": 4,
+                    "ParameterName": "Motion"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 7,
+                    "ParameterName": "Series"
+                  },
+                  "To": {
+                    "Id": 5,
+                    "ParameterName": "Factor"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 6,
+                    "ParameterName": "Value"
+                  },
+                  "To": {
+                    "Id": 7,
+                    "ParameterName": "Step"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 10,
+                    "ParameterName": "Tree"
+                  },
+                  "To": {
+                    "Id": 8,
+                    "ParameterName": "Tree"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 8,
+                    "ParameterName": "Tree"
+                  },
+                  "To": {
+                    "Id": 9,
+                    "ParameterName": "Tree"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 1,
+                    "ParameterName": "Points"
+                  },
+                  "To": {
+                    "Id": 10,
+                    "ParameterName": "Tree"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 4,
+                    "ParameterName": "Geometry"
+                  },
+                  "To": {
+                    "Id": 11,
+                    "ParameterName": "Tree"
+                  }
+                },
+                {
+                  "From": {
+                    "Id": 11,
+                    "ParameterName": "Tree"
+                  },
+                  "To": {
+                    "Id": 12,
+                    "ParameterName": "Plane"
+                  }
+                }
+              ]
+            }
+        },
+          
+
+        {
             "Description": "Creates a cup shape in grasshopper",
             "GrasshopperScriptModel":
             {
