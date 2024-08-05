@@ -4,16 +4,13 @@ import openai
 from patch_openai.patch_openai import patch_openai
 
 
-from typing import List
-import os
-import openai
-
 def get_embeddings(text_list: List[str]) -> List[str]:
     """
     Retrieves embeddings for a list of texts using the OpenAI API.
 
     Args:
-        text_list (List[str]): A list of texts for which embeddings need to be retrieved.
+        text_list (List[str]): A list of texts for which embeddings need to be
+        retrieved.
 
     Returns:
         List[str]: A list of embeddings corresponding to the input texts.
@@ -44,19 +41,29 @@ def create_batches(
     max_tokens: int = 8191
 ) -> List[List[str]]:
     """
-    Splits a list of texts into batches based on the maximum number of tokens allowed per batch.
+    Splits a list of texts into batches based on the maximum number of tokens
+    allowed per batch.
 
     Args:
         text_list (List[str]): A list of texts to be split into batches.
-        max_tokens (int, optional): The maximum number of tokens allowed per batch. Defaults to 8191.
+        max_tokens (int, optional): The maximum number of tokens allowed per
+        batch. Defaults to 8191.
 
     Returns:
-        List[List[str]]: A list of batches, where each batch is a list of texts.
+        List[List[str]]: A list of batches, where each batch is a list of
+        texts.
 
     Example:
-        text_list = ["This is the first text.", "This is the second text.", "This is the third text."]
+        text_list = [
+            "This is the first text.",
+            "This is the second text.",
+            "This is the third text."
+        ]
         max_tokens = 10
-        create_batches(text_list, max_tokens) -> [["This is the first text.", "This is the second text."], ["This is", "the third", "text."]]
+        create_batches(text_list, max_tokens) -> [
+            ["This is the first text.", "This is the second text."],
+            ["This is", "the third", "text."]
+        ]
     """
     batches = []
     current_batch = []
