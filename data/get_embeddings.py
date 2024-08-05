@@ -34,8 +34,6 @@ def get_embeddings(text_list: List[str]) -> List[str]:
     return embeddings
 
 
-from typing import List
-
 def create_batches(
     text_list: List[str],
     max_tokens: int = 8191
