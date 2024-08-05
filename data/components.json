@@ -3658,14 +3658,7 @@
       "Description": "Import a model from file",
       "IsCoreComponent": true,
       "Inputs": [
-        { "Name": "File Path", "DataType": "Text", "IsOptional": false },
-        { "Name": "Name", "DataType": "Text", "IsOptional": false },
-        { "Name": "Layer", "DataType": "Text", "IsOptional": false },
-        { "Name": "Linetype", "DataType": "Text", "IsOptional": false },
-        { "Name": "Hatch Pattern", "DataType": "Text", "IsOptional": false },
-        { "Name": "Annotation Styles", "DataType": "Text", "IsOptional": false },
-        { "Name": "Materials", "DataType": "Text", "IsOptional": false },
-        { "Name": "Block Definitions", "DataType": "Text", "IsOptional": false }
+        { "Name": "File Path", "DataType": "Text", "IsOptional": false }
       ],
       "Outputs": [
         {
@@ -4409,7 +4402,7 @@
       "Description": "A panel for custom notes and text values",
       "IsCoreComponent": true,
       "Inputs": [],
-      "Outputs": [{ "Name": "Value", "DataType": "Text", "IsOptional": false }]
+      "Outputs": [{ "Name": "Text", "DataType": "Text", "IsOptional": false }]
     },
     {
       "Name": "Solar Incidence",
@@ -11329,7 +11322,7 @@
       "Description": "Contains a collection of three-dimensional points",
       "IsCoreComponent": true,
       "Inputs": [],
-      "Outputs": [{ "Name": "Value", "DataType": "Point", "IsOptional": false }]
+      "Outputs": [{ "Name": "Point", "DataType": "Point", "IsOptional": false }]
     },
     {
       "Name": "Map to Surface",
