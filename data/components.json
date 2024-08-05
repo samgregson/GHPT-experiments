@@ -2,26 +2,6 @@
   "Components":
   [
     {
-      "Name": "Point",
-      "Description": "Represents a point in 3D space.",
-      "IsCoreComponent": true,
-      "Inputs": [
-        { "Name": "Point", "DataType": "Point", "IsOptional": true }
-      ],
-      "Outputs": [
-        { "Name": "Point", "DataType": "Point", "IsOptional": false }
-      ]
-    },
-    {
-      "Name": "Number Slider",
-      "Description": "A slider for selecting a numeric value.",
-      "IsCoreComponent": true,
-      "Inputs": [],
-      "Outputs": [
-        { "Name": "Value", "DataType": "Number", "IsOptional": false }
-      ]
-    },
-    {
       "Name": "Cull Pattern",
       "Description": "Cull (remove) elements in a list using a repeating bit mask.",
       "IsCoreComponent": true,
@@ -31,6 +11,21 @@
       ],
       "Outputs": [
         { "Name": "List", "DataType": "Generic Data", "IsOptional": false }
+      ]
+    },
+    {
+      "Name": "Query Model Environments",
+      "Description": "Query a Rhino document for all available render environments",
+      "IsCoreComponent": true,
+      "Inputs": [
+        { "Name": "Name", "DataType": "Text Pattern", "IsOptional": true }
+      ],
+      "Outputs": [
+        {
+          "Name": "Environments",
+          "DataType": "Model Environment",
+          "IsOptional": false
+        }
       ]
     },
     {
@@ -1076,6 +1071,21 @@
       ]
     },
     {
+      "Name": "Directional Light",
+      "Description": "Directional Light",
+      "IsCoreComponent": true,
+      "Inputs": [
+        { "Name": "Directional Light", "DataType": "Light", "IsOptional": true },
+        { "Name": "Location", "DataType": "Point", "IsOptional": true },
+        { "Name": "Direction", "DataType": "Vector", "IsOptional": true }
+      ],
+      "Outputs": [
+        { "Name": "Directional Light", "DataType": "Light", "IsOptional": false },
+        { "Name": "Location", "DataType": "Point", "IsOptional": false },
+        { "Name": "Direction", "DataType": "Vector", "IsOptional": false }
+      ]
+    },
+    {
       "Name": "Path Compare",
       "Description": "Compare a path to a mask pattern",
       "IsCoreComponent": true,
@@ -1201,7 +1211,7 @@
       "Description": "Push or Pull content to and from a Rhino model",
       "IsCoreComponent": true,
       "Inputs": [{ "Name": "Content", "DataType": "Data", "IsOptional": true }],
-      "Outputs": [{ "Name": "Content", "DataType": "Data", "IsOptional": false }]
+      "Outputs": [{ "Name": "Result", "DataType": "Data", "IsOptional": false }]
     },
     {
       "Name": "Concatenate",
@@ -1833,6 +1843,23 @@
       ]
     },
     {
+      "Name": "Rectangular Light",
+      "Description": "Rectangular Light",
+      "IsCoreComponent": true,
+      "Inputs": [
+        { "Name": "Rectangular Light", "DataType": "Light", "IsOptional": true },
+        { "Name": "Plane", "DataType": "Plane", "IsOptional": true },
+        { "Name": "Length", "DataType": "Number", "IsOptional": true },
+        { "Name": "Width", "DataType": "Number", "IsOptional": true }
+      ],
+      "Outputs": [
+        { "Name": "Rectangular Light", "DataType": "Light", "IsOptional": false },
+        { "Name": "Plane", "DataType": "Plane", "IsOptional": false },
+        { "Name": "Length", "DataType": "Number", "IsOptional": false },
+        { "Name": "Width", "DataType": "Number", "IsOptional": false }
+      ]
+    },
+    {
       "Name": "Colour Gradient",
       "Description": "Colour Gradient",
       "IsCoreComponent": true,
@@ -1855,6 +1882,27 @@
         { "Name": "Repeat", "DataType": "Number", "IsOptional": false },
         { "Name": "Type", "DataType": "Integer", "IsOptional": false },
         { "Name": "Colours", "DataType": "Colour Stop", "IsOptional": false }
+      ]
+    },
+    {
+      "Name": "Sun",
+      "Description": "Sun from Earth anchor point and date/time.",
+      "IsCoreComponent": true,
+      "Inputs": [
+        { "Name": "Sun", "DataType": "Data", "IsOptional": true },
+        { "Name": "Enabled", "DataType": "Boolean", "IsOptional": true },
+        { "Name": "Intensity", "DataType": "Number", "IsOptional": true },
+        { "Name": "Date Time", "DataType": "Time", "IsOptional": true },
+        { "Name": "Latitude", "DataType": "Number", "IsOptional": true },
+        { "Name": "Longitude", "DataType": "Number", "IsOptional": true }
+      ],
+      "Outputs": [
+        { "Name": "Sun", "DataType": "Data", "IsOptional": false },
+        { "Name": "Enabled", "DataType": "Boolean", "IsOptional": false },
+        { "Name": "Intensity", "DataType": "Number", "IsOptional": false },
+        { "Name": "Date Time", "DataType": "Time", "IsOptional": false },
+        { "Name": "Latitude", "DataType": "Number", "IsOptional": true },
+        { "Name": "Longitude", "DataType": "Number", "IsOptional": true }
       ]
     },
     {
@@ -2560,26 +2608,6 @@
       ]
     },
     {
-      "Name": "Ladybug_fly",
-      "Description": "Use Fly to cycle through all connected sliders. If no slider is connects it will cycle through all the sliders in the document!\r\n      Fly is originally posted as a code snippet by David Rutten. The code has been modified by James Ramsedn and Mostapha Sadeghipour Roudsari.\r\n\r\n      -\r\n      Provided by Ladybug 0.0.66\r\n      ",
-      "IsCoreComponent": true,
-      "Inputs": [
-        {
-          "Name": "_inputSliders",
-          "DataType": "Generic Data",
-          "IsOptional": true
-        },
-        { "Name": "_fly", "DataType": "Generic Data", "IsOptional": true }
-      ],
-      "Outputs": [
-        {
-          "Name": "Vviiiiiiiiiizzz",
-          "DataType": "Generic Data",
-          "IsOptional": false
-        }
-      ]
-    },
-    {
       "Name": "Deconstruct Material",
       "Description": "Deconstruct a display material (ie. shader) into its various attributes",
       "IsCoreComponent": true,
@@ -2701,6 +2729,7 @@
       ],
       "Outputs": [
         { "Name": "Hatch", "DataType": "Hatch", "IsOptional": false },
+        { "Name": "Boundary", "DataType": "Curve", "IsOptional": false },
         {
           "Name": "Hatch Pattern",
           "DataType": "Model Hatch Pattern",
@@ -3440,6 +3469,16 @@
       "Outputs": [{ "Name": "Mesh", "DataType": "Mesh", "IsOptional": false }]
     },
     {
+      "Name": "Duplicate Content",
+      "Description": "Duplicates input content with a new identity.\r\nClears the current content Id and optionally lets you set a new parent and name.",
+      "IsCoreComponent": true,
+      "Inputs": [
+        { "Name": "Content", "DataType": "Data", "IsOptional": false },
+        { "Name": "Name", "DataType": "Text", "IsOptional": true }
+      ],
+      "Outputs": [{ "Name": "Content", "DataType": "Data", "IsOptional": false }]
+    },
+    {
       "Name": "ArcCosine",
       "Description": "Compute the angle whose cosine is the specified value.",
       "IsCoreComponent": true,
@@ -3619,14 +3658,7 @@
       "Description": "Import a model from file",
       "IsCoreComponent": true,
       "Inputs": [
-        { "Name": "File Path", "DataType": "Text", "IsOptional": false },
-        { "Name": "Name", "DataType": "Text", "IsOptional": false },
-        { "Name": "Layer", "DataType": "Text", "IsOptional": false },
-        { "Name": "Linetype", "DataType": "Text", "IsOptional": false },
-        { "Name": "Hatch Pattern", "DataType": "Text", "IsOptional": false },
-        { "Name": "Annotation Styles", "DataType": "Text", "IsOptional": false },
-        { "Name": "Materials", "DataType": "Text", "IsOptional": false },
-        { "Name": "Block Definitions", "DataType": "Text", "IsOptional": false }
+        { "Name": "File Path", "DataType": "Text", "IsOptional": false }
       ],
       "Outputs": [
         {
@@ -3750,6 +3782,18 @@
         { "Name": "Meshes B", "DataType": "Mesh", "IsOptional": false }
       ],
       "Outputs": [{ "Name": "Result", "DataType": "Mesh", "IsOptional": false }]
+    },
+    {
+      "Name": "Sun Preview",
+      "Description": "Preview a sun.",
+      "IsCoreComponent": true,
+      "Inputs": [
+        { "Name": "Sun", "DataType": "Data", "IsOptional": false },
+        { "Name": "Origin", "DataType": "Point", "IsOptional": true },
+        { "Name": "Distance", "DataType": "Number", "IsOptional": true },
+        { "Name": "Scale", "DataType": "Number", "IsOptional": true }
+      ],
+      "Outputs": []
     },
     {
       "Name": "Intersection Filter",
@@ -4206,6 +4250,13 @@
       "Outputs": [{ "Name": "Patch", "DataType": "Surface", "IsOptional": false }]
     },
     {
+      "Name": "Number Slider",
+      "Description": "Numeric slider for single values",
+      "IsCoreComponent": true,
+      "Inputs": [],
+      "Outputs": [{ "Name": "Value", "DataType": "Number", "IsOptional": false }]
+    },
+    {
       "Name": "Blur Numbers",
       "Description": "Blur a list of numbers by averaging neighbours",
       "IsCoreComponent": true,
@@ -4345,6 +4396,13 @@
       "Outputs": [
         { "Name": "Item", "DataType": "Generic Data", "IsOptional": false }
       ]
+    },
+    {
+      "Name": "Panel",
+      "Description": "A panel for custom notes and text values",
+      "IsCoreComponent": true,
+      "Inputs": [],
+      "Outputs": [{ "Name": "Text", "DataType": "Text", "IsOptional": false }]
     },
     {
       "Name": "Solar Incidence",
@@ -5101,6 +5159,19 @@
       "Outputs": [{ "Name": "Frame", "DataType": "Plane", "IsOptional": false }]
     },
     {
+      "Name": "Linear Light",
+      "Description": "Linear Light",
+      "IsCoreComponent": true,
+      "Inputs": [
+        { "Name": "Linear Light", "DataType": "Light", "IsOptional": true },
+        { "Name": "Line", "DataType": "Line", "IsOptional": true }
+      ],
+      "Outputs": [
+        { "Name": "Linear Light", "DataType": "Light", "IsOptional": false },
+        { "Name": "Line", "DataType": "Line", "IsOptional": false }
+      ]
+    },
+    {
       "Name": "Isotrim",
       "Description": "Extract an isoparametric subset of a surface.",
       "IsCoreComponent": true,
@@ -5507,6 +5578,50 @@
         },
         { "Name": "File Path", "DataType": "Text", "IsOptional": false },
         { "Name": "Exported", "DataType": "Boolean", "IsOptional": false }
+      ]
+    },
+    {
+      "Name": "Import Model Material",
+      "Description": "Import Model Material",
+      "IsCoreComponent": true,
+      "Inputs": [
+        { "Name": "File Path", "DataType": "Text", "IsOptional": false }
+      ],
+      "Outputs": [
+        { "Name": "Material", "DataType": "Model Material", "IsOptional": false }
+      ]
+    },
+    {
+      "Name": "Skylight",
+      "Description": "The Rhino skylight",
+      "IsCoreComponent": true,
+      "Inputs": [
+        { "Name": "Skylight", "DataType": "Data", "IsOptional": true },
+        { "Name": "Enabled", "DataType": "Boolean", "IsOptional": true },
+        {
+          "Name": "Custom Environment",
+          "DataType": "Boolean",
+          "IsOptional": true
+        },
+        {
+          "Name": "Environment",
+          "DataType": "Model Environment",
+          "IsOptional": true
+        }
+      ],
+      "Outputs": [
+        { "Name": "Skylight", "DataType": "Data", "IsOptional": false },
+        { "Name": "Enabled", "DataType": "Boolean", "IsOptional": false },
+        {
+          "Name": "Custom Environment",
+          "DataType": "Boolean",
+          "IsOptional": false
+        },
+        {
+          "Name": "Environment",
+          "DataType": "Model Environment",
+          "IsOptional": false
+        }
       ]
     },
     {
@@ -6027,6 +6142,19 @@
         { "Name": "Size", "DataType": "Number", "IsOptional": false }
       ],
       "Outputs": []
+    },
+    {
+      "Name": "Point Light",
+      "Description": "Point Light",
+      "IsCoreComponent": true,
+      "Inputs": [
+        { "Name": "Point Light", "DataType": "Light", "IsOptional": true },
+        { "Name": "Location", "DataType": "Point", "IsOptional": true }
+      ],
+      "Outputs": [
+        { "Name": "Point Light", "DataType": "Light", "IsOptional": false },
+        { "Name": "Location", "DataType": "Point", "IsOptional": false }
+      ]
     },
     {
       "Name": "Logical And Filter",
@@ -6612,6 +6740,15 @@
       ]
     },
     {
+      "Name": "Query Model Location",
+      "Description": "Query a Rhino document for its location on earth",
+      "IsCoreComponent": true,
+      "Inputs": [],
+      "Outputs": [
+        { "Name": "Location", "DataType": "Earth Location", "IsOptional": false }
+      ]
+    },
+    {
       "Name": "Brep | Brep",
       "Description": "Solve intersection events for two Breps.",
       "IsCoreComponent": true,
@@ -6622,6 +6759,16 @@
       "Outputs": [
         { "Name": "Curves", "DataType": "Curve", "IsOptional": false },
         { "Name": "Points", "DataType": "Point", "IsOptional": false }
+      ]
+    },
+    {
+      "Name": "Query Render Options",
+      "Description": "Query a Rhino document for its render options",
+      "IsCoreComponent": true,
+      "Inputs": [],
+      "Outputs": [
+        { "Name": "Sun", "DataType": "Data", "IsOptional": false },
+        { "Name": "Skylight", "DataType": "Data", "IsOptional": false }
       ]
     },
     {
@@ -6669,6 +6816,17 @@
       "Outputs": [
         { "Name": "Inside", "DataType": "Curve", "IsOptional": false },
         { "Name": "Outside", "DataType": "Curve", "IsOptional": false }
+      ]
+    },
+    {
+      "Name": "Query Model Textures",
+      "Description": "Query a Rhino document for all available render textures",
+      "IsCoreComponent": true,
+      "Inputs": [
+        { "Name": "Name", "DataType": "Text Pattern", "IsOptional": true }
+      ],
+      "Outputs": [
+        { "Name": "Textures", "DataType": "Model Texture", "IsOptional": false }
       ]
     },
     {
@@ -7193,7 +7351,7 @@
     },
     {
       "Name": "Hide Model Layer",
-      "Description": "Controls layer visibility on model viewports and new details.",
+      "Description": "Defines layer visibility for model viewports and new details.",
       "IsCoreComponent": true,
       "Inputs": [
         { "Name": "Layer", "DataType": "Model Layer", "IsOptional": false },
@@ -7610,6 +7768,27 @@
       ]
     },
     {
+      "Name": "Light Attributes",
+      "Description": "Modify or inspect the attributes of a light.",
+      "IsCoreComponent": true,
+      "Inputs": [
+        { "Name": "Light", "DataType": "Light", "IsOptional": false },
+        { "Name": "Enabled", "DataType": "Boolean", "IsOptional": true },
+        { "Name": "Colour", "DataType": "Colour", "IsOptional": true },
+        { "Name": "Intensity", "DataType": "Number", "IsOptional": true },
+        { "Name": "Shadow Intensity", "DataType": "Number", "IsOptional": true },
+        { "Name": "Falloff", "DataType": "Integer", "IsOptional": true }
+      ],
+      "Outputs": [
+        { "Name": "Light", "DataType": "Light", "IsOptional": false },
+        { "Name": "Enabled", "DataType": "Boolean", "IsOptional": false },
+        { "Name": "Colour", "DataType": "Colour", "IsOptional": false },
+        { "Name": "Intensity", "DataType": "Number", "IsOptional": false },
+        { "Name": "Shadow Intensity", "DataType": "Number", "IsOptional": false },
+        { "Name": "Falloff", "DataType": "Integer", "IsOptional": true }
+      ]
+    },
+    {
       "Name": "Point Oriented",
       "Description": "Create a point from plane {u,v,w} coordinates.",
       "IsCoreComponent": true,
@@ -7702,26 +7881,38 @@
       ]
     },
     {
-      "Name": "Model Space Scale",
-      "Description": "Get or set the model space scale factor for linetypes and/or hatch patterns.",
+      "Name": "Drafting Scale",
+      "Description": "Get or set the scale factor for annotations, linetypes, and/or hatch patterns.",
       "IsCoreComponent": true,
       "Inputs": [
-        { "Name": "Linetype Scale", "DataType": "Number", "IsOptional": true },
-        { "Name": "Hatch Scale", "DataType": "Number", "IsOptional": true },
         {
-          "Name": "Hatch Scale Enabled",
+          "Name": "Annotation Model Scaling",
           "DataType": "Boolean",
           "IsOptional": true
-        }
+        },
+        {
+          "Name": "Annotation Layout Scaling",
+          "DataType": "Boolean",
+          "IsOptional": true
+        },
+        { "Name": "Hatch Scaling", "DataType": "Boolean", "IsOptional": true },
+        { "Name": "Hatch Scale", "DataType": "Number", "IsOptional": true },
+        { "Name": "Linetype Scale", "DataType": "Number", "IsOptional": true }
       ],
       "Outputs": [
-        { "Name": "Linetype Scale", "DataType": "Number", "IsOptional": false },
-        { "Name": "Hatch Scale", "DataType": "Number", "IsOptional": false },
         {
-          "Name": "Hatch Scale Enabled",
+          "Name": "Annotation Model Scaling",
           "DataType": "Boolean",
           "IsOptional": false
-        }
+        },
+        {
+          "Name": "Annotation Layout Scaling",
+          "DataType": "Boolean",
+          "IsOptional": false
+        },
+        { "Name": "Hatch Scaling", "DataType": "Boolean", "IsOptional": false },
+        { "Name": "Hatch Scale", "DataType": "Number", "IsOptional": false },
+        { "Name": "Linetype Scale", "DataType": "Number", "IsOptional": false }
       ]
     },
     {
@@ -7906,6 +8097,35 @@
       "Outputs": [
         { "Name": "Upper Case", "DataType": "Text", "IsOptional": false },
         { "Name": "Lower Case", "DataType": "Text", "IsOptional": false }
+      ]
+    },
+    {
+      "Name": "Model Basic Environment",
+      "Description": "Model Basic Environment",
+      "IsCoreComponent": true,
+      "Inputs": [
+        {
+          "Name": "Environment",
+          "DataType": "Model Environment",
+          "IsOptional": true
+        },
+        { "Name": "Name", "DataType": "Text", "IsOptional": true },
+        { "Name": "Background Colour", "DataType": "Colour", "IsOptional": true },
+        { "Name": "Projection", "DataType": "Integer", "IsOptional": true }
+      ],
+      "Outputs": [
+        {
+          "Name": "Environment",
+          "DataType": "Model Environment",
+          "IsOptional": false
+        },
+        { "Name": "Name", "DataType": "Text", "IsOptional": false },
+        {
+          "Name": "Background Colour",
+          "DataType": "Colour",
+          "IsOptional": false
+        },
+        { "Name": "Projection", "DataType": "Integer", "IsOptional": false }
       ]
     },
     {
@@ -8394,6 +8614,18 @@
         { "Name": "Y-Axis", "DataType": "Vector", "IsOptional": false }
       ],
       "Outputs": [{ "Name": "Plane", "DataType": "Plane", "IsOptional": false }]
+    },
+    {
+      "Name": "Query Model Lights",
+      "Description": "Query a Rhino document for all available lights",
+      "IsCoreComponent": true,
+      "Inputs": [
+        { "Name": "Name", "DataType": "Text Pattern", "IsOptional": true },
+        { "Name": "Layer", "DataType": "Text Pattern", "IsOptional": true }
+      ],
+      "Outputs": [
+        { "Name": "Lights", "DataType": "Model Object", "IsOptional": false }
+      ]
     },
     {
       "Name": "Truncate",
@@ -9161,6 +9393,33 @@
       "Outputs": [{ "Name": "Box", "DataType": "Box", "IsOptional": false }]
     },
     {
+      "Name": "Spotlight",
+      "Description": "Spotlight",
+      "IsCoreComponent": true,
+      "Inputs": [
+        { "Name": "Spotlight", "DataType": "Light", "IsOptional": true },
+        { "Name": "Location", "DataType": "Point", "IsOptional": true },
+        { "Name": "Target", "DataType": "Point", "IsOptional": true },
+        {
+          "Name": "Spotlight Hardness",
+          "DataType": "Number",
+          "IsOptional": true
+        },
+        { "Name": "Spotlight Angle", "DataType": "Number", "IsOptional": true }
+      ],
+      "Outputs": [
+        { "Name": "Spotlight", "DataType": "Light", "IsOptional": false },
+        { "Name": "Location", "DataType": "Point", "IsOptional": false },
+        { "Name": "Target", "DataType": "Point", "IsOptional": false },
+        {
+          "Name": "Spotlight Hardness",
+          "DataType": "Number",
+          "IsOptional": false
+        },
+        { "Name": "Spotlight Angle", "DataType": "Number", "IsOptional": false }
+      ]
+    },
+    {
       "Name": "Delete Faces",
       "Description": "Delete faces from a mesh",
       "IsCoreComponent": true,
@@ -9592,6 +9851,27 @@
         { "Name": "Scale", "DataType": "Boolean", "IsOptional": false }
       ],
       "Outputs": [{ "Name": "Surface", "DataType": "Brep", "IsOptional": false }]
+    },
+    {
+      "Name": "Model Earth Location",
+      "Description": "Associates a model location and orientation with a latitude, longitude, and elevation value on Earth.",
+      "IsCoreComponent": true,
+      "Inputs": [
+        { "Name": "Location", "DataType": "Earth Location", "IsOptional": true },
+        { "Name": "Name", "DataType": "Text", "IsOptional": true },
+        { "Name": "Anchor", "DataType": "Plane", "IsOptional": true },
+        { "Name": "Latitude", "DataType": "Number", "IsOptional": true },
+        { "Name": "Longitude", "DataType": "Number", "IsOptional": true },
+        { "Name": "Elevation", "DataType": "Number", "IsOptional": true }
+      ],
+      "Outputs": [
+        { "Name": "Location", "DataType": "Earth Location", "IsOptional": false },
+        { "Name": "Name", "DataType": "Text", "IsOptional": false },
+        { "Name": "Anchor", "DataType": "Plane", "IsOptional": false },
+        { "Name": "Latitude", "DataType": "Number", "IsOptional": false },
+        { "Name": "Longitude", "DataType": "Number", "IsOptional": false },
+        { "Name": "Elevation", "DataType": "Number", "IsOptional": false }
+      ]
     },
     {
       "Name": "Rectangle",
@@ -10429,6 +10709,25 @@
       ]
     },
     {
+      "Name": "Sun (Manual Control)",
+      "Description": "Sun from North angle, azimuth, and altitude values.",
+      "IsCoreComponent": true,
+      "Inputs": [
+        { "Name": "Sun", "DataType": "Data", "IsOptional": true },
+        { "Name": "Enabled", "DataType": "Boolean", "IsOptional": true },
+        { "Name": "Intensity", "DataType": "Number", "IsOptional": true },
+        { "Name": "Azimuth", "DataType": "Number", "IsOptional": true },
+        { "Name": "Altitude", "DataType": "Number", "IsOptional": true }
+      ],
+      "Outputs": [
+        { "Name": "Sun", "DataType": "Data", "IsOptional": false },
+        { "Name": "Enabled", "DataType": "Boolean", "IsOptional": false },
+        { "Name": "Intensity", "DataType": "Number", "IsOptional": false },
+        { "Name": "Azimuth", "DataType": "Number", "IsOptional": false },
+        { "Name": "Altitude", "DataType": "Number", "IsOptional": false }
+      ]
+    },
+    {
       "Name": "Brep | Line",
       "Description": "Solve intersection events for a Brep and a line.",
       "IsCoreComponent": true,
@@ -10483,7 +10782,7 @@
       "IsCoreComponent": true,
       "Inputs": [
         { "Name": "Curve", "DataType": "Curve", "IsOptional": false },
-        { "Name": "Linetype", "DataType": "Model Linetype", "IsOptional": false },
+        { "Name": "Linetype", "DataType": "Model Linetype", "IsOptional": true },
         { "Name": "Colour", "DataType": "Colour", "IsOptional": false }
       ],
       "Outputs": []
@@ -10497,6 +10796,21 @@
         { "Name": "Cutter", "DataType": "Brep", "IsOptional": true }
       ],
       "Outputs": [{ "Name": "Result", "DataType": "Brep", "IsOptional": false }]
+    },
+    {
+      "Name": "Import Model Environment",
+      "Description": "Import Model Environment",
+      "IsCoreComponent": true,
+      "Inputs": [
+        { "Name": "File Path", "DataType": "Text", "IsOptional": false }
+      ],
+      "Outputs": [
+        {
+          "Name": "Environment",
+          "DataType": "Model Environment",
+          "IsOptional": false
+        }
+      ]
     },
     {
       "Name": "Jitter",
@@ -11002,6 +11316,13 @@
         { "Name": "Output", "DataType": "Text", "IsOptional": false },
         { "Name": "A", "DataType": "Generic Data", "IsOptional": false }
       ]
+    },
+    {
+      "Name": "Point",
+      "Description": "Contains a collection of three-dimensional points",
+      "IsCoreComponent": true,
+      "Inputs": [],
+      "Outputs": [{ "Name": "Point", "DataType": "Point", "IsOptional": false }]
     },
     {
       "Name": "Map to Surface",
