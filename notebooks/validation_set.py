@@ -271,6 +271,127 @@ outputs = [
     """,
     # "Create a rectangular grid of 5 by 5 points with a spacing of 10 in the x and y directions."
     """
+    {
+    "Components": [
+        {
+        "Id": 1,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "5..5..6"
+        },
+        {
+        "Id": 2,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "10..10..20"
+        },
+        {
+        "Id": 3,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "10..10..20"
+        },
+        {
+        "Id": 4,
+        "Name": "Construct Point"
+        },
+        {
+        "Id": 5,
+        "Name": "Cross Reference"
+        },
+        {
+        "Id": 6,
+        "Name": "Series"
+        },
+        {
+        "Id": 7,
+        "Name": "Series"
+        }
+    ],
+    "Connections": [
+        {
+        "From": {
+            "Id": 5,
+            "ParameterName": "List (A)"
+        },
+        "To": {
+            "Id": 4,
+            "ParameterName": "X coordinate"
+        }
+        },
+        {
+        "From": {
+            "Id": 5,
+            "ParameterName": "List (B)"
+        },
+        "To": {
+            "Id": 4,
+            "ParameterName": "Y coordinate"
+        }
+        },
+        {
+        "From": {
+            "Id": 6,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 5,
+            "ParameterName": "List (A)"
+        }
+        },
+        {
+        "From": {
+            "Id": 7,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 5,
+            "ParameterName": "List (B)"
+        }
+        },
+        {
+        "From": {
+            "Id": 2,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 6,
+            "ParameterName": "Step"
+        }
+        },
+        {
+        "From": {
+            "Id": 1,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 6,
+            "ParameterName": "Count"
+        }
+        },
+        {
+        "From": {
+            "Id": 3,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 7,
+            "ParameterName": "Step"
+        }
+        },
+        {
+        "From": {
+            "Id": 1,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 7,
+            "ParameterName": "Count"
+        }
+        }
+    ]
+    }
+
     """,
     # "Generate a sphere with a radius of 10 at the origin."
     """
@@ -630,6 +751,178 @@ outputs = [
     """,
     # "Generate a series of 10 squares with side lengths increasing by 2 for each subsequent square."
     """
+    {
+    "Components": [
+        {
+        "Id": 1,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "1..5..5"
+        },
+        {
+        "Id": 2,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "5..10..20"
+        },
+        {
+        "Id": 3,
+        "Name": "Series"
+        },
+        {
+        "Id": 4,
+        "Name": "Series"
+        },
+        {
+        "Id": 5,
+        "Name": "Series"
+        },
+        {
+        "Id": 6,
+        "Name": "Sphere"
+        },
+        {
+        "Id": 7,
+        "Name": "Cross Reference"
+        },
+        {
+        "Id": 8,
+        "Name": "Construct Point"
+        }
+    ],
+    "Connections": [
+        {
+        "From": {
+            "Id": 2,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 3,
+            "ParameterName": "Step"
+        }
+        },
+        {
+        "From": {
+            "Id": 1,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 3,
+            "ParameterName": "Count"
+        }
+        },
+        {
+        "From": {
+            "Id": 2,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 4,
+            "ParameterName": "Step"
+        }
+        },
+        {
+        "From": {
+            "Id": 1,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 4,
+            "ParameterName": "Count"
+        }
+        },
+        {
+        "From": {
+            "Id": 2,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 5,
+            "ParameterName": "Step"
+        }
+        },
+        {
+        "From": {
+            "Id": 1,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 5,
+            "ParameterName": "Count"
+        }
+        },
+        {
+        "From": {
+            "Id": 8,
+            "ParameterName": "Point"
+        },
+        "To": {
+            "Id": 6,
+            "ParameterName": "Base"
+        }
+        },
+        {
+        "From": {
+            "Id": 3,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 7,
+            "ParameterName": "List (A)"
+        }
+        },
+        {
+        "From": {
+            "Id": 4,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 7,
+            "ParameterName": "List (B)"
+        }
+        },
+        {
+        "From": {
+            "Id": 5,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 7,
+            "ParameterName": "List (C)"
+        }
+        },
+        {
+        "From": {
+            "Id": 7,
+            "ParameterName": "List (A)"
+        },
+        "To": {
+            "Id": 8,
+            "ParameterName": "X coordinate"
+        }
+        },
+        {
+        "From": {
+            "Id": 7,
+            "ParameterName": "List (B)"
+        },
+        "To": {
+            "Id": 8,
+            "ParameterName": "Y coordinate"
+        }
+        },
+        {
+        "From": {
+            "Id": 7,
+            "ParameterName": "List (C)"
+        },
+        "To": {
+            "Id": 8,
+            "ParameterName": "Z coordinate"
+        }
+        }
+    ]
+    }
     """,
     # "Create a cone with a base radius of 5 and a height of 10."
     """
