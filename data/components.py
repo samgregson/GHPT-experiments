@@ -4,6 +4,7 @@ import numpy as np
 import openai
 from pydantic import BaseModel
 from typing import List, Optional
+from data.get_embeddings import get_embeddings
 from patch_openai.patch_openai import patch_openai
 
 
@@ -43,24 +44,16 @@ def get_components_with_embeddings() -> ValidComponents:
         # load from embeddings.json if file exists
         with open(embeddings_json_path, 'r') as f:
             components_json = json.load(f)
-        return ValidComponents.model_validate(components_json)
+            return ValidComponents.model_validate(components_json)
+
     else:
-        # Generate embeddings for all component names
+        # Generate embeddings for all components
         valid_components = load_components()
-        component_names = [
+        component_text = [
             f"{c.Name}: ({c.Description})" for c in valid_components.Components
         ]
 
-        OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
-        client = openai.OpenAI(api_key=OPENAI_API_KEY)
-        client = patch_openai(client)
-        response = client.embeddings.create(
-            model="text-embedding-3-small",
-            input=component_names,
-            encoding_format="float"
-        )
-
-        embeddings = [d.embedding for d in response.data]
+        embeddings = get_embeddings(text_list=component_text)
 
         for c, embedding in zip(valid_components.Components, embeddings):
             c.Embedding = embedding

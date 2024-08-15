@@ -138,7 +138,7 @@ async def pipe_problem_statement(
 
 @traceable
 async def pipe_strategy(
-    client: Union[AsyncInstructor, Instructor],  
+    client: Union[AsyncInstructor, Instructor],
     user_prompt: str,
     problem_statement: ProblemStatement,
     examples: List[Example],

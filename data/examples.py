@@ -3,6 +3,7 @@ import os
 import numpy as np
 import openai
 from pydantic import BaseModel
+from data.get_embeddings import get_embeddings
 from patch_openai.patch_openai import patch_openai
 from typing import List, Optional
 from models.models import GrasshopperScriptModel
@@ -45,16 +46,7 @@ def get_examples_with_embeddings() -> Examples:
             f"{e.Description}" for e in examples.Examples
         ]
 
-        OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
-        client = openai.OpenAI(api_key=OPENAI_API_KEY)
-        client = patch_openai(client)
-        response = client.embeddings.create(
-            model="text-embedding-3-small",
-            input=example_desc,
-            encoding_format="float"
-        )
-
-        embeddings = [d.embedding for d in response.data]
+        embeddings = get_embeddings(text_list=example_desc)
 
         for e, embedding in zip(examples.Examples, embeddings):
             e.Embedding = embedding
