@@ -72,7 +72,7 @@ outputs = [
         "Advice": "Make sure to set the number sliders to the correct value"
     }
     """,
-    "Generate a spiral with 10 turns and a radius of 2."
+    # "Generate a spiral with 10 turns and a radius of 2."
     """
     {
     "Components": [
@@ -268,7 +268,7 @@ outputs = [
     ]
     }
     """,
-    "Create a rectangular grid of 5 by 5 points with a spacing of 10 in the x and y directions."
+    # "Create a rectangular grid of 5 by 5 points with a spacing of 10 in the x and y directions."
     """
     {
     "Components": [
@@ -1452,6 +1452,281 @@ outputs = [
     """,
     # "Create a 3D grid of 5x5x5 cubes with a spacing of 10 in the x, y, and z directions. The size of the cubes should be determined by each cube's proximity to a random point on the grid such that at distance 0 the cube has dimensions 0 and at distance 1 the cube has dimensions 1."
     """
+    {
+    "Components": [
+        {
+        "Id": 1,
+        "Name": "Box Rectangle"
+        },
+        {
+        "Id": 2,
+        "Name": "Rectangle"
+        },
+        {
+        "Id": 3,
+        "Name": "Series"
+        },
+        {
+        "Id": 4,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..10..10"
+        },
+        {
+        "Id": 5,
+        "Name": "Unit X"
+        },
+        {
+        "Id": 6,
+        "Name": "Unit Y"
+        },
+        {
+        "Id": 7,
+        "Name": "Unit Z"
+        },
+        {
+        "Id": 8,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..5..10"
+        },
+        {
+        "Id": 9,
+        "Name": "Random"
+        },
+        {
+        "Id": 10,
+        "Name": "Cube"
+        },
+        {
+        "Id": 11,
+        "Name": "Move"
+        },
+        {
+        "Id": 12,
+        "Name": "Graft Tree"
+        },
+        {
+        "Id": 13,
+        "Name": "Vector 2Pt"
+        },
+        {
+        "Id": 14,
+        "Name": "Graft Tree"
+        },
+        {
+        "Id": 15,
+        "Name": "Vector 2Pt"
+        },
+        {
+        "Id": 16,
+        "Name": "Flatten Tree"
+        }
+    ],
+    "Connections": [
+        {
+        "From": {
+            "Id": 2,
+            "ParameterName": "Rectangle"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Rectangle"
+        }
+        },
+        {
+        "From": {
+            "Id": 9,
+            "ParameterName": "Random"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Height"
+        }
+        },
+        {
+        "From": {
+            "Id": 9,
+            "ParameterName": "Random"
+        },
+        "To": {
+            "Id": 2,
+            "ParameterName": "X Size"
+        }
+        },
+        {
+        "From": {
+            "Id": 9,
+            "ParameterName": "Random"
+        },
+        "To": {
+            "Id": 2,
+            "ParameterName": "Y Size"
+        }
+        },
+        {
+        "From": {
+            "Id": 4,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 3,
+            "ParameterName": "Step"
+        }
+        },
+        {
+        "From": {
+            "Id": 8,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 3,
+            "ParameterName": "Count"
+        }
+        },
+        {
+        "From": {
+            "Id": 3,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 5,
+            "ParameterName": "Factor"
+        }
+        },
+        {
+        "From": {
+            "Id": 3,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 6,
+            "ParameterName": "Factor"
+        }
+        },
+        {
+        "From": {
+            "Id": 3,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 7,
+            "ParameterName": "Factor"
+        }
+        },
+        {
+        "From": {
+            "Id": 10,
+            "ParameterName": "Result"
+        },
+        "To": {
+            "Id": 9,
+            "ParameterName": "Number"
+        }
+        },
+        {
+        "From": {
+            "Id": 8,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 10,
+            "ParameterName": "Value"
+        }
+        },
+        {
+        "From": {
+            "Id": 1,
+            "ParameterName": "Box"
+        },
+        "To": {
+            "Id": 11,
+            "ParameterName": "Geometry"
+        }
+        },
+        {
+        "From": {
+            "Id": 16,
+            "ParameterName": "Tree"
+        },
+        "To": {
+            "Id": 11,
+            "ParameterName": "Motion"
+        }
+        },
+        {
+        "From": {
+            "Id": 13,
+            "ParameterName": "Vector"
+        },
+        "To": {
+            "Id": 12,
+            "ParameterName": "Tree"
+        }
+        },
+        {
+        "From": {
+            "Id": 14,
+            "ParameterName": "Tree"
+        },
+        "To": {
+            "Id": 13,
+            "ParameterName": "Point A"
+        }
+        },
+        {
+        "From": {
+            "Id": 6,
+            "ParameterName": "Unit vector"
+        },
+        "To": {
+            "Id": 13,
+            "ParameterName": "Point B"
+        }
+        },
+        {
+        "From": {
+            "Id": 5,
+            "ParameterName": "Unit vector"
+        },
+        "To": {
+            "Id": 14,
+            "ParameterName": "Tree"
+        }
+        },
+        {
+        "From": {
+            "Id": 12,
+            "ParameterName": "Tree"
+        },
+        "To": {
+            "Id": 15,
+            "ParameterName": "Point A"
+        }
+        },
+        {
+        "From": {
+            "Id": 7,
+            "ParameterName": "Unit vector"
+        },
+        "To": {
+            "Id": 15,
+            "ParameterName": "Point B"
+        }
+        },
+        {
+        "From": {
+            "Id": 15,
+            "ParameterName": "Vector"
+        },
+        "To": {
+            "Id": 16,
+            "ParameterName": "Tree"
+        }
+        }
+    ]
+    }
+
     """,
     # "Generate a series of 10 cylinders with radii increasing by 1 and heights increasing by 2 for each subsequent cylinder."
     """
@@ -1561,8 +1836,306 @@ outputs = [
     """,
     # "Create a series of 10 cones with base radii increasing by 1 and heights increasing by 2 for each subsequent cone."
     """
+    {
+    "Components": [
+        {
+        "Id": 1,
+        "Name": "Series"
+        },
+        {
+        "Id": 2,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..10..10"
+        },
+        {
+        "Id": 3,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..1..1"
+        },
+        {
+        "Id": 4,
+        "Name": "Series"
+        },
+        {
+        "Id": 5,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..10..10"
+        },
+        {
+        "Id": 6,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..2..10"
+        },
+        {
+        "Id": 7,
+        "Name": "Cone"
+        }
+    ],
+    "Connections": [
+        {
+        "From": {
+            "Id": 3,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Step"
+        }
+        },
+        {
+        "From": {
+            "Id": 2,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Count"
+        }
+        },
+        {
+        "From": {
+            "Id": 6,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 4,
+            "ParameterName": "Step"
+        }
+        },
+        {
+        "From": {
+            "Id": 5,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 4,
+            "ParameterName": "Count"
+        }
+        },
+        {
+        "From": {
+            "Id": 1,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 7,
+            "ParameterName": "Radius"
+        }
+        },
+        {
+        "From": {
+            "Id": 4,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 7,
+            "ParameterName": "Length"
+        }
+        }
+    ]
+    }
+
     """,
     # "Generate a series of 10 pyramids with base side lengths increasing by 1 and heights increasing by 2 for each subsequent pyramid."
     """
+    {
+    "Components": [
+        {
+        "Id": 1,
+        "Name": "Series"
+        },
+        {
+        "Id": 2,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..10..10"
+        },
+        {
+        "Id": 3,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..1..1"
+        },
+        {
+        "Id": 4,
+        "Name": "Series"
+        },
+        {
+        "Id": 5,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..10..10"
+        },
+        {
+        "Id": 6,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..2..10"
+        },
+        {
+        "Id": 7,
+        "Name": "Extrude Point"
+        },
+        {
+        "Id": 8,
+        "Name": "Rectangle"
+        },
+        {
+        "Id": 9,
+        "Name": "Area"
+        },
+        {
+        "Id": 10,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..1..1"
+        },
+        {
+        "Id": 11,
+        "Name": "Move"
+        },
+        {
+        "Id": 12,
+        "Name": "Unit Z"
+        }
+    ],
+    "Connections": [
+        {
+        "From": {
+            "Id": 10,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Start"
+        }
+        },
+        {
+        "From": {
+            "Id": 3,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Step"
+        }
+        },
+        {
+        "From": {
+            "Id": 2,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Count"
+        }
+        },
+        {
+        "From": {
+            "Id": 6,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 4,
+            "ParameterName": "Step"
+        }
+        },
+        {
+        "From": {
+            "Id": 5,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 4,
+            "ParameterName": "Count"
+        }
+        },
+        {
+        "From": {
+            "Id": 8,
+            "ParameterName": "Rectangle"
+        },
+        "To": {
+            "Id": 7,
+            "ParameterName": "Base"
+        }
+        },
+        {
+        "From": {
+            "Id": 11,
+            "ParameterName": "Geometry"
+        },
+        "To": {
+            "Id": 7,
+            "ParameterName": "Point"
+        }
+        },
+        {
+        "From": {
+            "Id": 1,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 8,
+            "ParameterName": "X Size"
+        }
+        },
+        {
+        "From": {
+            "Id": 1,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 8,
+            "ParameterName": "Y Size"
+        }
+        },
+        {
+        "From": {
+            "Id": 8,
+            "ParameterName": "Rectangle"
+        },
+        "To": {
+            "Id": 9,
+            "ParameterName": "Geometry"
+        }
+        },
+        {
+        "From": {
+            "Id": 9,
+            "ParameterName": "Centroid"
+        },
+        "To": {
+            "Id": 11,
+            "ParameterName": "Geometry"
+        }
+        },
+        {
+        "From": {
+            "Id": 12,
+            "ParameterName": "Unit vector"
+        },
+        "To": {
+            "Id": 11,
+            "ParameterName": "Motion"
+        }
+        },
+        {
+        "From": {
+            "Id": 4,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 12,
+            "ParameterName": "Factor"
+        }
+        }
+    ]
+    }
+
     """,
 ]
