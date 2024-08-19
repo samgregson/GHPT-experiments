@@ -68,8 +68,7 @@ outputs = [
                     "ParameterName": "Length"
                 }
             }
-        ],
-        "Advice": "Make sure to set the number sliders to the correct value"
+        ]
     }
     """,
     # "Generate a spiral with 10 turns and a radius of 2."
@@ -390,7 +389,6 @@ outputs = [
         }
     ]
     }
-
     """,
     # "Generate a sphere with a radius of 10 at the origin."
     """
@@ -435,7 +433,6 @@ outputs = [
         }
     ]
     }
-
     """,
     # "Create a series of 10 circles with radii increasing by 1 for each subsequent circle."
     """
@@ -510,7 +507,6 @@ outputs = [
         }
     ]
     }
-
     """,
     # "Generate a 3D grid of 5x5x5 spheres with a spacing of 10 in the x, y, and z directions."
     """
@@ -746,7 +742,6 @@ outputs = [
         }
     ]
     }
-
     """,
     # "Generate a series of 10 squares with side lengths increasing by 2 for each subsequent square."
     """
@@ -1152,7 +1147,6 @@ outputs = [
         }
     ]
     }
-
     """,
     # "Create a triangular grid of 5 by 5 points with a spacing of 10 in the x and y directions."
     """
@@ -1294,13 +1288,231 @@ outputs = [
         }
     ]
     }
-
     """,
     # "Create a pyramid with a base side length of 5 and a height of 10."
     """
+    {
+    "Components": [
+        {
+        "Id": 1,
+        "Name": "Rectangle"
+        },
+        {
+        "Id": 2,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..5..10"
+        },
+        {
+        "Id": 3,
+        "Name": "Extrude Point"
+        },
+        {
+        "Id": 4,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..10..10"
+        },
+        {
+        "Id": 5,
+        "Name": "Area"
+        },
+        {
+        "Id": 6,
+        "Name": "Move"
+        },
+        {
+        "Id": 7,
+        "Name": "Unit Z"
+        }
+    ],
+    "Connections": [
+        {
+        "From": {
+            "Id": 2,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "X Size"
+        }
+        },
+        {
+        "From": {
+            "Id": 2,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Y Size"
+        }
+        },
+        {
+        "From": {
+            "Id": 1,
+            "ParameterName": "Rectangle"
+        },
+        "To": {
+            "Id": 3,
+            "ParameterName": "Base"
+        }
+        },
+        {
+        "From": {
+            "Id": 6,
+            "ParameterName": "Geometry"
+        },
+        "To": {
+            "Id": 3,
+            "ParameterName": "Point"
+        }
+        },
+        {
+        "From": {
+            "Id": 1,
+            "ParameterName": "Rectangle"
+        },
+        "To": {
+            "Id": 5,
+            "ParameterName": "Geometry"
+        }
+        },
+        {
+        "From": {
+            "Id": 5,
+            "ParameterName": "Centroid"
+        },
+        "To": {
+            "Id": 6,
+            "ParameterName": "Geometry"
+        }
+        },
+        {
+        "From": {
+            "Id": 7,
+            "ParameterName": "Unit vector"
+        },
+        "To": {
+            "Id": 6,
+            "ParameterName": "Motion"
+        }
+        },
+        {
+        "From": {
+            "Id": 4,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 7,
+            "ParameterName": "Factor"
+        }
+        }
+    ]
+    }
     """,
     # "Generate a series of 10 lines with lengths increasing by 2 for each subsequent line."
     """
+    {
+    "Components": [
+        {
+        "Id": 1,
+        "Name": "Series"
+        },
+        {
+        "Id": 2,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..10..10"
+        },
+        {
+        "Id": 3,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..2..10"
+        },
+        {
+        "Id": 4,
+        "Name": "Line SDL"
+        },
+        {
+        "Id": 5,
+        "Name": "Unit X"
+        },
+        {
+        "Id": 6,
+        "Name": "Point",
+        "Value": "{0,0,0}"
+        },
+        {
+        "Id": 7,
+        "Name": "Number Slider",
+        "NickName": "",
+        "Value": "0..1..1"
+        }
+    ],
+    "Connections": [
+        {
+        "From": {
+            "Id": 7,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Start"
+        }
+        },
+        {
+        "From": {
+            "Id": 3,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Step"
+        }
+        },
+        {
+        "From": {
+            "Id": 2,
+            "ParameterName": "Value"
+        },
+        "To": {
+            "Id": 1,
+            "ParameterName": "Count"
+        }
+        },
+        {
+        "From": {
+            "Id": 6,
+            "ParameterName": "Point"
+        },
+        "To": {
+            "Id": 4,
+            "ParameterName": "Start"
+        }
+        },
+        {
+        "From": {
+            "Id": 5,
+            "ParameterName": "Unit vector"
+        },
+        "To": {
+            "Id": 4,
+            "ParameterName": "Direction"
+        }
+        },
+        {
+        "From": {
+            "Id": 1,
+            "ParameterName": "Series"
+        },
+        "To": {
+            "Id": 4,
+            "ParameterName": "Length"
+        }
+        }
+    ]
+    }
     """,
     # "Create a hexagonal grid of 5 by 5 points with a spacing of 10 in the x and y directions."
     """
@@ -1726,7 +1938,6 @@ outputs = [
         }
     ]
     }
-
     """,
     # "Generate a series of 10 cylinders with radii increasing by 1 and heights increasing by 2 for each subsequent cylinder."
     """
@@ -1832,7 +2043,6 @@ outputs = [
         }
     ]
     }
-
     """,
     # "Create a series of 10 cones with base radii increasing by 1 and heights increasing by 2 for each subsequent cone."
     """
@@ -1938,7 +2148,6 @@ outputs = [
         }
     ]
     }
-
     """,
     # "Generate a series of 10 pyramids with base side lengths increasing by 1 and heights increasing by 2 for each subsequent pyramid."
     """
@@ -2136,6 +2345,5 @@ outputs = [
         }
     ]
     }
-
     """,
 ]
